@@ -89,6 +89,9 @@ final class PackageWriter
         $profile = $specification->profileUrl($package->version);
         $this->mkdir($root);
         $this->mkdir($root.'/metadata');
+        // The structMap always has a Documentation division; its label must lead
+        // to a folder (commons-ip checks CSIP107), even when it stays empty.
+        $this->mkdir($root.'/documentation');
 
         // Package level files.
         $descriptive = $this->place($root, 'metadata/descriptive', $package->descriptive);
@@ -173,6 +176,7 @@ final class PackageWriter
         $base = $root.'/representations/'.$representation->name;
         $this->mkdir($base.'/data');
         $this->mkdir($base.'/metadata');
+        $this->mkdir($base.'/documentation');
 
         $data = [];
         foreach ($representation->data as $path => [$content, $mimeType]) {

@@ -130,6 +130,19 @@ final class PackageWriterTest extends TestCase
         $this->assertSame(['CSIP60'], array_map(fn ($finding) => $finding->requirement->id, $report->warnings()));
     }
 
+    public function test_documentation_folders_exist_even_when_empty(): void
+    {
+        $builder = PackageBuilder::sip('sip-1')->submitter('Office');
+        $builder->representation('rep1', fn (RepresentationBuilder $r) => $r->file(new StringContent('x', 'a.txt')));
+
+        $zip = new \ZipArchive;
+        $zip->open((new PackageWriter)->write($builder, $this->temporaryFile()));
+
+        // The Documentation division of the structMap names this folder (commons-ip, CSIP107).
+        $this->assertNotFalse($zip->locateName('sip-1/documentation/'));
+        $this->assertNotFalse($zip->locateName('sip-1/representations/rep1/documentation/'));
+    }
+
     public function test_no_aip_2_1_0(): void
     {
         $this->expectException(UnsupportedVersionException::class);

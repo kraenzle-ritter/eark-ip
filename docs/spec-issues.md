@@ -71,5 +71,9 @@ since they break on case-sensitive file systems.
   "Representations" division at all (missing CSIP101/104, both SHOULD).
   Packages from this writer therefore get this one warning from
   commons-ip.
+- **Empty documentation.** commons-ip requires the label of every division
+  to lead to a folder (its CSIP107). The writer always writes a
+  Documentation division (CSIP93 SHOULD) and therefore always creates
+  `documentation/`, empty when there is none (since 0.1.1).
 - **AIP9.** commons-ip requires AIP file IDs to start with "ID"; all IDs the
   writer produces do.
