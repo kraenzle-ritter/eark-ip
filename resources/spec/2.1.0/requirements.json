@@ -1,0 +1,1397 @@
+[
+    {
+        "id": "CSIP1",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Package Identifier",
+        "location": "mets/@OBJID",
+        "cardinality": "1..1",
+        "description": "The `mets/@OBJID` attribute is mandatory, its value is a string identifier for the METS document. For the package METS document, this should be the name/ID of the package, i.e. the name of the package root folder. For a representation level METS document this value records the name/ID of the representation, i.e. the name of the top-level representation folder."
+    },
+    {
+        "id": "CSIP2",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Content Category",
+        "location": "mets/@TYPE",
+        "cardinality": "1..1",
+        "description": "The `mets/@TYPE` attribute MUST be used to declare the category of the content held in the package, e.g. \"Datasets\", \"Websites\", \"Mixes\" , \"Other\", etc.. Legal values are defined in a fixed vocabulary. When the content category used falls outside of the defined vocabulary the `mets/@TYPE` value must be set to \"OTHER\" and the specific value declared in `mets/@csip:OTHERTYPE`. The vocabulary will develop under the curation of the DILCIS Board as additional content information type specifications are produced."
+    },
+    {
+        "id": "CSIP3",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Other Content Category",
+        "location": "mets[@TYPE='OTHER']/@csip:OTHERTYPE",
+        "cardinality": "0..1",
+        "description": "When the `mets/@TYPE` attribute has the value \"OTHER\" the `mets/@csip:OTHERTYPE` attribute MUST be used to declare the content category of the package/representation. The value can either be \"OTHER\" or any other string that are not present in the vocabulary used in the `mets/@TYPE` attribute."
+    },
+    {
+        "id": "CSIP4",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Content Information Type Specification",
+        "location": "mets/@csip:CONTENTINFORMATIONTYPE",
+        "cardinality": "0..1",
+        "description": "Used to declare the Content Information Type Specification used when creating the package. Legal values are defined in a fixed vocabulary. The attribute is mandatory for representation level METS documents. The vocabulary will evolve under the care of the DILCIS Board as additional Content Information Type Specifications are developed."
+    },
+    {
+        "id": "CSIP5",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "Other Content Information Type Specification",
+        "location": "mets[@csip:CONTENTINFORMATIONTYPE='OTHER']/@csip:OTHERCONTENTINFORMATIONTYPE",
+        "cardinality": "0..1",
+        "description": "When the `mets/@csip:CONTENTINFORMATIONTYPE` has the value \"OTHER\" the `mets/@csip:OTHERCONTENTINFORMATIONTYPE` must state the content information type."
+    },
+    {
+        "id": "CSIP6",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "METS Profile",
+        "location": "mets/@PROFILE",
+        "cardinality": "1..1",
+        "description": "The URL of the METS profile that the information package conforms with."
+    },
+    {
+        "id": "CSIP7",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Package creation datetime",
+        "location": "mets/metsHdr/@CREATEDATE",
+        "cardinality": "1..1",
+        "description": "`mets/metsHdr/@CREATEDATE` records the date and time the package was created."
+    },
+    {
+        "id": "CSIP8",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Package last modification datetime",
+        "location": "mets/metsHdr/@LASTMODDATE",
+        "cardinality": "0..1",
+        "description": "`mets/metsHdr/@LASTMODDATE` records the data and time the package was modified and is mandatory when the package has been modified."
+    },
+    {
+        "id": "CSIP9",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "OAIS Package type information",
+        "location": "mets/metsHdr/@csip:OAISPACKAGETYPE",
+        "cardinality": "1..1",
+        "description": "`mets/metsHdr/@csip:OAISPACKAGETYPE` is an additional CSIP attribute that declares the type of the IP."
+    },
+    {
+        "id": "CSIP10",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent",
+        "location": "mets/metsHdr/agent",
+        "cardinality": "1..n",
+        "description": "A mandatory agent element records the software used to create the package. Other uses of agents may be described in any local implementations that extend the profile."
+    },
+    {
+        "id": "CSIP11",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent role",
+        "location": "mets/metsHdr/agent[@ROLE='CREATOR']",
+        "cardinality": "1..1",
+        "description": "The mandatory agent element MUST have a `@ROLE` attribute with the value “CREATOR”."
+    },
+    {
+        "id": "CSIP12",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent type",
+        "location": "mets/metsHdr/agent[@TYPE='OTHER']",
+        "cardinality": "1..1",
+        "description": "The mandatory agent element MUST have a `@TYPE` attribute with the value “OTHER”."
+    },
+    {
+        "id": "CSIP13",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent other type",
+        "location": "mets/metsHdr/agent[@OTHERTYPE='SOFTWARE']",
+        "cardinality": "1..1",
+        "description": "The mandatory agent element MUST have a `@OTHERTYPE` attribute with the value “SOFTWARE”."
+    },
+    {
+        "id": "CSIP14",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent name",
+        "location": "mets/metsHdr/agent/name",
+        "cardinality": "1..1",
+        "description": "The mandatory agent's name element records the name of the software tool used to create the IP."
+    },
+    {
+        "id": "CSIP15",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Agent additional information",
+        "location": "mets/metsHdr/agent/note",
+        "cardinality": "1..1",
+        "description": "The mandatory agent's note element records the version of the tool used to create the IP."
+    },
+    {
+        "id": "CSIP16",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Classification of the agent additional information",
+        "location": "mets/metsHdr/agent/note[@csip:NOTETYPE='SOFTWARE VERSION']",
+        "cardinality": "1..1",
+        "description": "The mandatory agent element's note child has a `@csip:NOTETYPE` attribute with a fixed value of \"SOFTWARE VERSION\"."
+    },
+    {
+        "id": "CSIP17",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Descriptive metadata",
+        "location": "mets/dmdSec",
+        "cardinality": "0..n",
+        "description": "Must be used if descriptive metadata for the package content is available. Each descriptive metadata section (`<dmdSec>`) contains a single description and must be repeated for multiple descriptions, when available. It is possible to transfer metadata in a package using just the descriptive metadata section and/or administrative metadata section."
+    },
+    {
+        "id": "CSIP18",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Descriptive metadata identifier",
+        "location": "mets/dmdSec/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the descriptive metadata section (`<dmdSec>`) used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP19",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Descriptive metadata creation datetime",
+        "location": "mets/dmdSec/@CREATED",
+        "cardinality": "1..1",
+        "description": "Creation date and time of the descriptive metadata in this section."
+    },
+    {
+        "id": "CSIP20",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Status of the descriptive metadata",
+        "location": "mets/dmdSec/@STATUS",
+        "cardinality": "0..1",
+        "description": "Indicates the status of the package using a fixed vocabulary."
+    },
+    {
+        "id": "CSIP21",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Reference to the document with the descriptive metadata",
+        "location": "mets/dmdSec/mdRef",
+        "cardinality": "0..1",
+        "description": "Reference to the descriptive metadata file located in the “metadata” section of the IP."
+    },
+    {
+        "id": "CSIP22",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/dmdSec/mdRef[@LOCTYPE='URL']",
+        "cardinality": "1..1",
+        "description": "The locator type is always used with the value \"URL\" from the vocabulary in the attribute."
+    },
+    {
+        "id": "CSIP23",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of link",
+        "location": "mets/dmdSec/mdRef[@xlink:type='simple']",
+        "cardinality": "1..1",
+        "description": "Attribute used with the value “simple”. Value list is maintained by the xlink standard."
+    },
+    {
+        "id": "CSIP24",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Resource location",
+        "location": "mets/dmdSec/mdRef/@xlink:href",
+        "cardinality": "1..1",
+        "description": "The actual location of the resource. This specification recommends recording a URL type filepath in this attribute."
+    },
+    {
+        "id": "CSIP25",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of metadata",
+        "location": "mets/dmdSec/mdRef/@MDTYPE",
+        "cardinality": "1..1",
+        "description": "Specifies the type of metadata in the referenced file. Values are taken from the list provided by the METS."
+    },
+    {
+        "id": "CSIP26",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File mime type",
+        "location": "mets/dmdSec/mdRef/@MIMETYPE",
+        "cardinality": "1..1",
+        "description": "The IANA mime type of the referenced file."
+    },
+    {
+        "id": "CSIP27",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File size",
+        "location": "mets/dmdSec/mdRef/@SIZE",
+        "cardinality": "1..1",
+        "description": "Size of the referenced file in bytes."
+    },
+    {
+        "id": "CSIP28",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File creation datetime",
+        "location": "mets/dmdSec/mdRef/@CREATED",
+        "cardinality": "1..1",
+        "description": "The creation date and time of the referenced file."
+    },
+    {
+        "id": "CSIP29",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum",
+        "location": "mets/dmdSec/mdRef/@CHECKSUM",
+        "cardinality": "1..1",
+        "description": "The checksum of the referenced file."
+    },
+    {
+        "id": "CSIP30",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum type",
+        "location": "mets/dmdSec/mdRef/@CHECKSUMTYPE",
+        "cardinality": "1..1",
+        "description": "A value from the METS-standard which identifies the algorithm used to calculate the checksum for the referenced file."
+    },
+    {
+        "id": "CSIP31",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Administrative metadata",
+        "location": "mets/amdSec",
+        "cardinality": "0..1",
+        "description": "If administrative / preservation metadata is available, it must be described using the administrative metadata section (`<amdSec>`) element. All administrative metadata is present in a single `<amdSec>` element. It is possible to transfer metadata in a package using just the descriptive metadata section and/or administrative metadata section."
+    },
+    {
+        "id": "CSIP32",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Digital provenance metadata",
+        "location": "mets/amdSec/digiprovMD",
+        "cardinality": "0..n",
+        "description": "For recording information about preservation the standard PREMIS is used. It is mandatory to include one `<digiprovMD>` element for each piece of PREMIS metadata. The use if PREMIS in METS is following the recommendations in the 2017 version of PREMIS in METS Guidelines."
+    },
+    {
+        "id": "CSIP33",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Digital provenance metadata identifier",
+        "location": "mets/amdSec/digiprovMD/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the digital provenance metadata section `mets/amdSec/digiprovMD` used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP34",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Status of the digital provenance metadata",
+        "location": "mets/amdSec/digiprovMD/@STATUS",
+        "cardinality": "0..1",
+        "description": "Indicates the status of the package using a fixed vocabulary."
+    },
+    {
+        "id": "CSIP35",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Reference to the document with the digital provenance metadata",
+        "location": "mets/amdSec/digiprovMD/mdRef",
+        "cardinality": "0..1",
+        "description": "Reference to the digital provenance metadata file stored in the “metadata” section of the IP."
+    },
+    {
+        "id": "CSIP36",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/amdSec/digiprovMD/mdRef[@LOCTYPE='URL']",
+        "cardinality": "1..1",
+        "description": "The locator type is always used with the value \"URL\" from the vocabulary in the attribute."
+    },
+    {
+        "id": "CSIP37",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of link",
+        "location": "mets/amdSec/digiprovMD/mdRef[@xlink:type='simple']",
+        "cardinality": "1..1",
+        "description": "Attribute used with the value “simple”. Value list is maintained by the xlink standard."
+    },
+    {
+        "id": "CSIP38",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Resource location",
+        "location": "mets/amdSec/digiprovMD/mdRef/@xlink:href",
+        "cardinality": "1..1",
+        "description": "The actual location of the resource. This specification recommends recording a URL type filepath within this attribute."
+    },
+    {
+        "id": "CSIP39",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of metadata",
+        "location": "mets/amdSec/digiprovMD/mdRef/@MDTYPE",
+        "cardinality": "1..1",
+        "description": "Specifies the type of metadata in the referenced file. Values are taken from the list provided by the METS."
+    },
+    {
+        "id": "CSIP40",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File mime type",
+        "location": "mets/amdSec/digiprovMD/mdRef/@MIMETYPE",
+        "cardinality": "1..1",
+        "description": "The IANA mime type for the referenced file."
+    },
+    {
+        "id": "CSIP41",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File size",
+        "location": "mets/amdSec/digiprovMD/mdRef/@SIZE",
+        "cardinality": "1..1",
+        "description": "Size of the referenced file in bytes."
+    },
+    {
+        "id": "CSIP42",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File creation datetime",
+        "location": "mets/amdSec/digiprovMD/mdRef/@CREATED",
+        "cardinality": "1..1",
+        "description": "Creation date and time of the referenced file."
+    },
+    {
+        "id": "CSIP43",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum",
+        "location": "mets/amdSec/digiprovMD/mdRef/@CHECKSUM",
+        "cardinality": "1..1",
+        "description": "The checksum of the referenced file."
+    },
+    {
+        "id": "CSIP44",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum type",
+        "location": "mets/amdSec/digiprovMD/mdRef/@CHECKSUMTYPE",
+        "cardinality": "1..1",
+        "description": "A value from the METS-standard which identifies the algorithm used to calculate the checksum for the referenced file."
+    },
+    {
+        "id": "CSIP45",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "Rights metadata",
+        "location": "mets/amdSec/rightsMD",
+        "cardinality": "0..n",
+        "description": "A simple rights statement may be used to describe general permissions for the package. Individual representations should state their specific rights in their representation METS file. Available standards include RightsStatements.org, Europeana rights statements info, METS Rights Schema created and maintained by the METS Board, the rights part of PREMIS as well as own local rights statements in use."
+    },
+    {
+        "id": "CSIP46",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Rights metadata identifier",
+        "location": "mets/amdSec/rightsMD/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the rights metadata section (`<rightsMD>`) used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP47",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Status of the rights metadata",
+        "location": "mets/amdSec/rightsMD/@STATUS",
+        "cardinality": "0..1",
+        "description": "Indicates the status of the package using a fixed vocabulary."
+    },
+    {
+        "id": "CSIP48",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Reference to the document with the rights metadata",
+        "location": "mets/amdSec/rightsMD/mdRef",
+        "cardinality": "0..1",
+        "description": "Reference to the rights metadata file stored in the “metadata” section of the IP."
+    },
+    {
+        "id": "CSIP49",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/amdSec/rightsMD/mdRef[@LOCTYPE='URL']",
+        "cardinality": "1..1",
+        "description": "The locator type is always used with the value \"URL\" from the vocabulary in the attribute."
+    },
+    {
+        "id": "CSIP50",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/amdSec/rightsMD/mdRef[@xlink:type='simple']",
+        "cardinality": "1..1",
+        "description": "Attribute used with the value “simple”. Value list is maintained by the xlink standard."
+    },
+    {
+        "id": "CSIP51",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Resource location",
+        "location": "mets/amdSec/rightsMD/mdRef/@xlink:href",
+        "cardinality": "1..1",
+        "description": "The actual location of the resource. We recommend recording a URL type filepath within this attribute."
+    },
+    {
+        "id": "CSIP52",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of metadata",
+        "location": "mets/amdSec/rightsMD/mdRef/@MDTYPE",
+        "cardinality": "1..1",
+        "description": "Specifies the type of metadata in the referenced file. Value is taken from the list provided by the METS."
+    },
+    {
+        "id": "CSIP53",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File mime type",
+        "location": "mets/amdSec/rightsMD/mdRef/@MIMETYPE",
+        "cardinality": "1..1",
+        "description": "The IANA mime type for the referenced file."
+    },
+    {
+        "id": "CSIP54",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File size",
+        "location": "mets/amdSec/rightsMD/mdRef/@SIZE",
+        "cardinality": "1..1",
+        "description": "Size of the referenced file in bytes."
+    },
+    {
+        "id": "CSIP55",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File creation datetime",
+        "location": "mets/amdSec/rightsMD/mdRef/@CREATED",
+        "cardinality": "1..1",
+        "description": "Creation date and time of the referenced file."
+    },
+    {
+        "id": "CSIP56",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum",
+        "location": "mets/amdSec/rightsMD/mdRef/@CHECKSUM",
+        "cardinality": "1..1",
+        "description": "The checksum of the referenced file."
+    },
+    {
+        "id": "CSIP57",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum type",
+        "location": "mets/amdSec/rightsMD/mdRef/@CHECKSUMTYPE",
+        "cardinality": "1..1",
+        "description": "A value from the METS-standard which identifies the algorithm used to calculate the checksum for the referenced file."
+    },
+    {
+        "id": "CSIP58",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "File section",
+        "location": "mets/fileSec",
+        "cardinality": "0..1",
+        "description": "References to all transferred content SHOULD be placed in the file section in the different file group elements, described in other requirements. Only a single file section (`<fileSec>`) element should be present. In the case that a package only contains metadata updates, i.e. exclusively metadata files, then no file references need to be added to this section."
+    },
+    {
+        "id": "CSIP59",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File section identifier",
+        "location": "mets/fileSec/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the file section used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP60",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Documentation file group",
+        "location": "mets/fileSec/fileGrp[@USE='Documentation']",
+        "cardinality": "1..n",
+        "description": "All documentation pertaining to the transferred content is placed in one or more file group elements with `mets/fileSec/fileGrp/@USE` attribute value \"Documentation\"."
+    },
+    {
+        "id": "CSIP61",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "Reference to administrative metadata",
+        "location": "mets/fileSec/fileGrp/@ADMID",
+        "cardinality": "0..1",
+        "description": "If administrative metadata has been provided at file group `mets/fileSec/fileGrp` level this attribute refers to its administrative metadata section by ID."
+    },
+    {
+        "id": "CSIP62",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Content Information Type Specification",
+        "location": "mets/@csip:CONTENTINFORMATIONTYPE=\"MIXED\"|mets/fileSec/fileGrp[@USE=[starts-with('Representations')]]/@csip:CONTENTINFORMATIONTYPE",
+        "cardinality": "0..1",
+        "description": "An added attribute which states the name of the content information type specification used to create the package. The vocabulary will evolve under the curation of the DILCIS Board as additional content information type specifications are developed. When the element \"Content Information Type Specification\" (CSIP4) has the value \"MIXED\" or the file group describes a representation, then this element states the content information type specification used for the file group. When the element \"Representations file group\" (CSIP114), the file group describes a representation with the `mets/fileSec/fileGrp/@USE` attribute value is starting with \"Representations\", then this element must state the content information type specification used for the representation."
+    },
+    {
+        "id": "CSIP63",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "Other Content Information Type Specification",
+        "location": "mets/fileSec/fileGrp[@csip:CONTENTINFORMATIONTYPE='OTHER']/@csip:OTHERCONTENTINFORMATIONTYPE",
+        "cardinality": "0..1",
+        "description": "When the `mets/fileSec/fileGrp/@csip:CONTENTINFORMATIONTYPE` attribute has the value \"OTHER\" the `mets/fileSec/fileGrp/@csip:OTHERCONTENTINFORMATIONTYPE` must state a value for the Content Information Type Specification used."
+    },
+    {
+        "id": "CSIP64",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Description of the use of the file group",
+        "location": "mets/fileSec/fileGrp/@USE",
+        "cardinality": "1..1",
+        "description": "The value in the `mets/fileSec/fileGrp/@USE` is the name of the whole folder structure to the data, e.g \"Documentation\", \"Schemas\", \"Representations/preingest\" or \"Representations/submission/data\"."
+    },
+    {
+        "id": "CSIP65",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File group identifier",
+        "location": "mets/fileSec/fileGrp/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the file group used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP66",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File",
+        "location": "mets/fileSec/fileGrp/file",
+        "cardinality": "1..n",
+        "description": "The file group (`<fileGrp>`) contains the file elements which describe the file objects."
+    },
+    {
+        "id": "CSIP67",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File identifier",
+        "location": "mets/fileSec/fileGrp/file/@ID",
+        "cardinality": "1..1",
+        "description": "A unique `xml:id` identifier for this file across the package."
+    },
+    {
+        "id": "CSIP68",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File mimetype",
+        "location": "mets/fileSec/fileGrp/file/@MIMETYPE",
+        "cardinality": "1..1",
+        "description": "The IANA mime type for the referenced file."
+    },
+    {
+        "id": "CSIP69",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File size",
+        "location": "mets/fileSec/fileGrp/file/@SIZE",
+        "cardinality": "1..1",
+        "description": "Size of the referenced file in bytes."
+    },
+    {
+        "id": "CSIP70",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File creation datetime",
+        "location": "mets/fileSec/fileGrp/file/@CREATED",
+        "cardinality": "1..1",
+        "description": "Creation date and time of the referenced file."
+    },
+    {
+        "id": "CSIP71",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum",
+        "location": "mets/fileSec/fileGrp/file/@CHECKSUM",
+        "cardinality": "1..1",
+        "description": "The checksum of the referenced file."
+    },
+    {
+        "id": "CSIP72",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File checksum type",
+        "location": "mets/fileSec/fileGrp/file/@CHECKSUMTYPE",
+        "cardinality": "1..1",
+        "description": "A value from the METS-standard which identifies the algorithm used to calculate the checksum for the referenced file."
+    },
+    {
+        "id": "CSIP73",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "File original identification",
+        "location": "mets/fileSec/fileGrp/file/@OWNERID",
+        "cardinality": "0..1",
+        "description": "If an identifier for the file was supplied by the owner it can be recorded in this attribute."
+    },
+    {
+        "id": "CSIP74",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "File reference to administrative metadata",
+        "location": "mets/fileSec/fileGrp/file/@ADMID",
+        "cardinality": "0..1",
+        "description": "If administrative metadata has been provided for the file this attribute refers to the file's administrative metadata by ID."
+    },
+    {
+        "id": "CSIP75",
+        "specification": "CSIP",
+        "level": "MAY",
+        "name": "File reference to descriptive metadata",
+        "location": "mets/fileSec/fileGrp/file/@DMDID",
+        "cardinality": "0..1",
+        "description": "If descriptive metadata has been provided per file this attribute refers to the file's descriptive metadata by ID."
+    },
+    {
+        "id": "CSIP76",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "File locator reference",
+        "location": "mets/fileSec/fileGrp/file/FLocat",
+        "cardinality": "1..1",
+        "description": "The location of each external file must be defined by the file location `<FLocat>` element using the same rules as references for metadata files. All references to files should be made using the XLink href attribute and the file protocol using the relative location of the file."
+    },
+    {
+        "id": "CSIP77",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/fileSec/fileGrp/file/FLocat[@LOCTYPE='URL']",
+        "cardinality": "1..1",
+        "description": "The locator type is always used with the value \"URL\" from the vocabulary in the attribute."
+    },
+    {
+        "id": "CSIP78",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of link",
+        "location": "mets/fileSec/fileGrp/file/FLocat[@xlink:type='simple']",
+        "cardinality": "1..1",
+        "description": "Attribute used with the value “simple”. Value list is maintained by the xlink standard."
+    },
+    {
+        "id": "CSIP79",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Resource location",
+        "location": "mets/fileSec/fileGrp/file/FLocat/@xlink:href",
+        "cardinality": "1..1",
+        "description": "The actual location of the resource. We recommend recording a URL type filepath within this attribute."
+    },
+    {
+        "id": "CSIP80",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Structural description of the package",
+        "location": "mets/structMap",
+        "cardinality": "1..n",
+        "description": "The structural map `<structMap>` element is the only mandatory element in the METS. The `<structMap>` in the CSIP describes the highest logical structure of the IP. Every CSIP compliant METS file must include ONE structural map `<structMap>` element used exactly as described in this section of requirements. Institutions can add their own additional custom structural maps as separate `<structMap>` sections following their own requirements."
+    },
+    {
+        "id": "CSIP81",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of structural description",
+        "location": "mets/structMap[@TYPE='PHYSICAL']",
+        "cardinality": "1..1",
+        "description": "The `mets/structMap/@TYPE` attribute must take the value “PHYSICAL” from the vocabulary."
+    },
+    {
+        "id": "CSIP82",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Name of the structural description",
+        "location": "mets/structMap[@LABEL='CSIP']",
+        "cardinality": "1..1",
+        "description": "The `mets/structMap/@LABEL` attribute value is set to “CSIP” from the vocabulary. This requirement identifies the CSIP compliant structural map `<structMap>` element."
+    },
+    {
+        "id": "CSIP83",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Structural description identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/@ID",
+        "cardinality": "1..1",
+        "description": "An `xml:id` identifier for the structural description (structMap) used for internal package references. It must be unique within the package."
+    },
+    {
+        "id": "CSIP84",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Main structural division",
+        "location": "mets/structMap[@LABEL='CSIP']/div",
+        "cardinality": "1..1",
+        "description": "The structural map comprises a single division."
+    },
+    {
+        "id": "CSIP85",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Main structural division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP88",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Metadata division",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Metadata']",
+        "cardinality": "1..1",
+        "description": "The metadata referenced in the administrative and/or descriptive metadata section is described in the structural map with one sub division. When the transfer consists of only administrative and/or descriptive metadata this is the only sub division that occurs."
+    },
+    {
+        "id": "CSIP89",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Metadata division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Metadata']/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP90",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Metadata division label",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Metadata']",
+        "cardinality": "1..1",
+        "description": "The metadata division `<div>` element's `@LABEL` attribute value must be \"Metadata\"."
+    },
+    {
+        "id": "CSIP91",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Metadata division references administrative metadata",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Metadata']/@ADMID",
+        "cardinality": "0..1",
+        "description": "The admimistrative metadata division should reference all current administrative metadata sections. All `<amdSec>`s with `@STATUS='CURRENT'` SHOULD be referenced by their identifier, @ID. The current `<amdSec>` @IDs are recorded in the `div[@LABEL='Metadata']/@ADMID` attribute in a space delimited list."
+    },
+    {
+        "id": "CSIP92",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Metadata division references descriptive metadata",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Metadata']/@DMDID",
+        "cardinality": "0..1",
+        "description": "The descriptive metadata division should reference all current descriptive metadata sections. All `<dmdSec>`s with `@STATUS='CURRENT'` SHOULD be referenced by their identifier, @ID. The current `<dmdSec>` @IDs are recorded in the `div[@LABEL='Metadata']/@DMDID` attribute in a space delimited list."
+    },
+    {
+        "id": "CSIP93",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Documentation division",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Documentation']",
+        "cardinality": "0..1",
+        "description": "The documentation referenced in the file section file groups is described in the structural map with one sub division."
+    },
+    {
+        "id": "CSIP94",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Documentation division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Documentation']/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP95",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Documentation division label",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Documentation']",
+        "cardinality": "1..1",
+        "description": "The documentation division `<div>` element in the package uses the value \"Documentation\" from the vocabulary as the value for the `@LABEL` attribute."
+    },
+    {
+        "id": "CSIP96",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Documentation file references",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Documentation']/fptr",
+        "cardinality": "0..n",
+        "description": "All file groups containing documentation described in the package are referenced via the relevant file group identifiers. There MUST be one file group reference per `<fptr>` element."
+    },
+    {
+        "id": "CSIP97",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Schema division",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Schemas']",
+        "cardinality": "0..1",
+        "description": "The schemas referenced in the file section file groups are described in the structural map within a single sub-division."
+    },
+    {
+        "id": "CSIP98",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Schema division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Schemas']/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP99",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Schema division label",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Schemas']",
+        "cardinality": "1..1",
+        "description": "The schema division `<div>` element's `@LABEL` attribute has the value \"Schemas\" from the vocabulary."
+    },
+    {
+        "id": "CSIP100",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Schema file reference",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Schemas']/fptr",
+        "cardinality": "0..n",
+        "description": "All file groups containing schemas described in the package are referenced via the relevant file group identifiers. One file group reference per fptr-element"
+    },
+    {
+        "id": "CSIP101",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Content division",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Representations']",
+        "cardinality": "0..1",
+        "description": "When no representations are present the content referenced in the file section file group with `@USE` attribute value \"Representations\" is described in the structural map as a single sub division."
+    },
+    {
+        "id": "CSIP102",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Content division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Representations']/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP103",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Content division label",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Representations']",
+        "cardinality": "1..1",
+        "description": "The package's content division `<div>` element must have the `@LABEL` attribute value \"Representations\", taken from the vocabulary."
+    },
+    {
+        "id": "CSIP104",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Content division file references",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Representations']/fptr",
+        "cardinality": "0..n",
+        "description": "All file groups containing content described in the package are referenced via the relevant file group identifiers. One file group reference per fptr-element."
+    },
+    {
+        "id": "CSIP105",
+        "specification": "CSIP",
+        "level": "SHOULD",
+        "name": "Representation division",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div",
+        "cardinality": "0..n",
+        "description": "When a package consists of multiple representations, each described by a representation level METS.xml document, there should be a discrete representation div element for each representation. Each representation div references the representation level METS.xml document, documenting the structure of the package and its constituent representations."
+    },
+    {
+        "id": "CSIP106",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Representations division identifier",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div/@ID",
+        "cardinality": "1..1",
+        "description": "Mandatory, `xml:id` identifier must be unique within the package."
+    },
+    {
+        "id": "CSIP107",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Representations division label",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div/@LABEL",
+        "cardinality": "1..1",
+        "description": "The package's representation division `<div>` element `@LABEL` attribute value must be the path to the representation level METS document starting with the value \"Representations\" followed by the main folder name for example \"Representations/submission\" and \"Representations/ingest\". This requirement gives the same value to be used as the requirement named \"Description of the use of the file group\" (CSIP64)"
+    },
+    {
+        "id": "CSIP108",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Representations division file references",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div/mptr/@xlink:title",
+        "cardinality": "1..1",
+        "description": "The file group containing the files described in the package are referenced via the relevant file group identifier. Related to the requirements CSIP114 which describes the \"Representations\" file group and CSIP65 which describes the file group identifier."
+    },
+    {
+        "id": "CSIP109",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Representation METS pointer",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div/mptr",
+        "cardinality": "1..1",
+        "description": "The division `<div>` of the specific representation includes one occurrence of the METS pointer `<mptr>` element, pointing to the appropriate representation METS file."
+    },
+    {
+        "id": "CSIP110",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Resource location",
+        "location": "mets/structMap/div/div/mptr/@xlink:href",
+        "cardinality": "1..1",
+        "description": "The actual location of the resource. We recommend recording a URL type filepath within this attribute."
+    },
+    {
+        "id": "CSIP111",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of link",
+        "location": "mets/structMap/div/div/mptr[@xlink:type='simple']",
+        "cardinality": "1..1",
+        "description": "Attribute used with the value “simple”. Value list is maintained by the xlink standard."
+    },
+    {
+        "id": "CSIP112",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Type of locator",
+        "location": "mets/structMap/div/div/mptr[@LOCTYPE='URL']",
+        "cardinality": "1..1",
+        "description": "The locator type is always used with the value \"URL\" from the vocabulary in the attribute."
+    },
+    {
+        "id": "CSIP113",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Schema file group",
+        "location": "mets/fileSec/fileGrp[@USE='Schemas']",
+        "cardinality": "1..n",
+        "description": "All XML schemas used in the information package must be referenced from one or more file groups with `mets/fileSec/fileGrp/@USE` attribute value \"Schemas\"."
+    },
+    {
+        "id": "CSIP114",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Representations file group",
+        "location": "mets/fileSec/fileGrp[@USE=[starts-with('Representations')]]",
+        "cardinality": "1..n",
+        "description": "A pointer to the METS document describing the representation or pointers to the content being transferred must be present in one or more file groups with `mets/fileSec/fileGrp/@USE` attribute value starting with \"Representations\" followed by the path to the folder where the representation level METS document is placed. For example \"Representation/submission\" and \"Representation/ingest\"."
+    },
+    {
+        "id": "CSIP116",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Documentation file group reference pointer",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Documentation']/fptr/@FILEID",
+        "cardinality": "1..1",
+        "description": "A reference, by ID, to the \"Documentation\" file group. Related to the requirements CSIP60 which describes the \"Documentation\" file group and CSIP65 which describes the file group identifier."
+    },
+    {
+        "id": "CSIP117",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Package header",
+        "location": "mets/metsHdr",
+        "cardinality": "1..1",
+        "description": "General element for describing the package."
+    },
+    {
+        "id": "CSIP118",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Schema file group reference",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Schemas']/fptr/@FILEID",
+        "cardinality": "1..1",
+        "description": "The pointer to the identifier for the \"Schema\" file group. Related to the requirements CSIP113 which describes the \"Schema\" file group and CSIP65 which describes the file group identifier."
+    },
+    {
+        "id": "CSIP119",
+        "specification": "CSIP",
+        "level": "MUST",
+        "name": "Content division file group references",
+        "location": "mets/structMap[@LABEL='CSIP']/div/div[@LABEL='Representations']/fptr/@FILEID",
+        "cardinality": "1..1",
+        "description": "The pointer to the identifier for the \"Representations\" file group. Related to the requirements CSIP114 which describes the \"Representations\" file group and CSIP65 which describes the file group identifier."
+    },
+    {
+        "id": "SIP1",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Package name",
+        "location": "mets/@LABEL",
+        "cardinality": "0..1",
+        "description": "An optional short text describing the contents of the package, e.g. \"Accounting records of 2017\"."
+    },
+    {
+        "id": "SIP2",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "METS Profile",
+        "location": "mets/@PROFILE",
+        "cardinality": "1..1",
+        "description": "The value is set to \"https://earksip.dilcis.eu/profile/E-ARK-SIP.xml\"."
+    },
+    {
+        "id": "SIP3",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Package status",
+        "location": "metsHdr/@RECORDSTATUS",
+        "cardinality": "0..1",
+        "description": "A way of indicating the status of the package and to instruct the OAIS on how to properly handle the package. If not set, the expected behaviour is equal to NEW."
+    },
+    {
+        "id": "SIP4",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "OAIS Package type information",
+        "location": "metsHdr/@csip:OAISPACKAGETYPE",
+        "cardinality": "1..1",
+        "description": "`@csip:OAISPACKAGETYPE` is used with the value \"SIP\"."
+    },
+    {
+        "id": "SIP5",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Submission agreement",
+        "location": "metsHdr/altRecordID",
+        "cardinality": "0..1",
+        "description": "A reference to the Submission Agreement associated with the package. `@TYPE` is used with the value \"SUBMISSIONAGREEMENT\". Example: RA 13-2011/5329; 2012-04-12 Example: http://submissionagreement.kb.se/dnr331-1144-2011/20120711/ Note: It is recommended to use a machine-readable format for a better description of a submission agreement. For example, the submission agreement developed by Docuteam GmbH http://www.loc.gov/standards/mets/profiles/00000041.xml"
+    },
+    {
+        "id": "SIP6",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Previous Submission agreement",
+        "location": "metsHdr/altRecordID",
+        "cardinality": "0..*",
+        "description": "An optional reference to a previous submission agreement(s) which the information may have belonged to. `@TYPE` is used with the value \"PREVIOUSSUBMISSIONAGREEMENT\". Example: FM 12-2387/12726, 2007-09-19 Example: http://submissionagreement.kb.se/dnr331-1144-2011/20120711/ Note: It is recommended to use a machine-readable format for a better description of a submission agreement. For example, the submission agreement developed by Docuteam GmbH http://www.loc.gov/standards/mets/profiles/00000041.xml"
+    },
+    {
+        "id": "SIP7",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Archival reference code",
+        "location": "metsHdr/altRecordID",
+        "cardinality": "0..1",
+        "description": "An optional reference code indicating where in the archival hierarchy the package shall be placed in the OAIS. `@TYPE` is used with the value \"REFERENCECODE\". Example: FM 12-2387/12726, 2007-09-19"
+    },
+    {
+        "id": "SIP8",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Previous archival reference code",
+        "location": "metsHdr/altRecordID",
+        "cardinality": "0..*",
+        "description": "In cases where the SIP originates from other institutions maintaining a reference code structure, this element can be used to record these reference codes and therefore support the provenance of the package when a whole archival description is not submitted with the submission. `@TYPE` is used with the value \"PREVIOUSREFERENCECODE\". Example: SE/FM/123/123.1/123.1.3"
+    },
+    {
+        "id": "SIP9",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Archival creator agent",
+        "location": "metsHdr/agent",
+        "cardinality": "0..1",
+        "description": "A wrapper element that enables to encode the name of the organisation or person that originally created the data being transferred. Please note that this might be different from the organisation which has been charged with preparing and sending the SIP to the archives."
+    },
+    {
+        "id": "SIP10",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Archival creator agent role",
+        "location": "metsHdr/agent/@ROLE",
+        "cardinality": "1..1",
+        "description": "The role of the person(s) or institution(s) responsible for the document/collection."
+    },
+    {
+        "id": "SIP11",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Archival creator agent type",
+        "location": "metsHdr/agent/@TYPE",
+        "cardinality": "1..1",
+        "description": "The type of the archival creator agent is \"ORGANIZATION\" or \"INDIVIDUAL\"."
+    },
+    {
+        "id": "SIP12",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Archival creator agent name",
+        "location": "metsHdr/agent/name",
+        "cardinality": "0..*",
+        "description": "The name of the organisation(s) that originally created the data being transferred. Please note that this might be different from the organisation which has been charged with preparing and sending the SIP to the archives."
+    },
+    {
+        "id": "SIP13",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Archival creator agent additional information",
+        "location": "metsHdr/agent/note",
+        "cardinality": "0..1",
+        "description": "The archival creator agent has a note providing a unique identification code for the archival creator."
+    },
+    {
+        "id": "SIP14",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Classification of the archival creator agent additional information",
+        "location": "metsHdr/agent/note/@csip:NOTETYPE",
+        "cardinality": "1..1",
+        "description": "The archival creator agent note is typed with the value of \"IDENTIFICATIONCODE\"."
+    },
+    {
+        "id": "SIP15",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Submitting agent",
+        "location": "metsHdr/agent",
+        "cardinality": "1..1",
+        "description": "The name of the organisation or person submitting the package to the archive."
+    },
+    {
+        "id": "SIP16",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Submitting agent role",
+        "location": "metsHdr/agent/@ROLE",
+        "cardinality": "1..1",
+        "description": "The role of the person(s) or institution(s) responsible for creating and/or submitting the package."
+    },
+    {
+        "id": "SIP17",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Submitting agent type",
+        "location": "metsHdr/agent/@TYPE",
+        "cardinality": "1..1",
+        "description": "The type of the submitting agent is \"ORGANIZATION\" or \"INDIVIDUAL\"."
+    },
+    {
+        "id": "SIP18",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Submitting agent name",
+        "location": "metsHdr/agent/name",
+        "cardinality": "1..1",
+        "description": "Name of the organisation submitting the package to the archive."
+    },
+    {
+        "id": "SIP19",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Submitting agent additional information",
+        "location": "metsHdr/agent/note",
+        "cardinality": "0..1",
+        "description": "The submitting agent has a note providing a unique identification code for the archival creator."
+    },
+    {
+        "id": "SIP20",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Classification of the submitting agent additional information",
+        "location": "metsHdr/agent/note/@csip:NOTETYPE",
+        "cardinality": "1..1",
+        "description": "The submitting agent note is typed with the value of \"IDENTIFICATIONCODE\"."
+    },
+    {
+        "id": "SIP21",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Contact person agent",
+        "location": "metsHdr/agent",
+        "cardinality": "0..*",
+        "description": "Contact person for the submission."
+    },
+    {
+        "id": "SIP22",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Contact person agent role",
+        "location": "metsHdr/agent/@ROLE",
+        "cardinality": "1..1",
+        "description": "The role of the contact person is \"CREATOR\"."
+    },
+    {
+        "id": "SIP23",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Contact person agent type",
+        "location": "metsHdr/agent/@TYPE",
+        "cardinality": "1..1",
+        "description": "The type of the contact person agent is \"INDIVIDUAL\"."
+    },
+    {
+        "id": "SIP24",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Contact person agent name",
+        "location": "metsHdr/agent/name",
+        "cardinality": "1..1",
+        "description": "Name of the contact person."
+    },
+    {
+        "id": "SIP25",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Contact person agent additional information",
+        "location": "metsHdr/agent/note",
+        "cardinality": "0..*",
+        "description": "The contact person agent has one or more notes giving the contact information."
+    },
+    {
+        "id": "SIP26",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Preservation agent",
+        "location": "metsHdr/agent",
+        "cardinality": "0..1",
+        "description": "The organisation or person that preserves the package."
+    },
+    {
+        "id": "SIP27",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Preservation agent role",
+        "location": "metsHdr/agent/@ROLE",
+        "cardinality": "1..1",
+        "description": "The role of the preservation agent is \"PRESERVATION\"."
+    },
+    {
+        "id": "SIP28",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Preservation agent type",
+        "location": "metsHdr/agent/@TYPE",
+        "cardinality": "1..1",
+        "description": "The type of the submitting agent is \"ORGANIZATION\"."
+    },
+    {
+        "id": "SIP29",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Preservation agent name",
+        "location": "metsHdr/agent/name",
+        "cardinality": "1..1",
+        "description": "Name of the organisation preserving the package."
+    },
+    {
+        "id": "SIP30",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "Preservation agent additional information",
+        "location": "metsHdr/agent/note",
+        "cardinality": "0..1",
+        "description": "The preservation agent has a note providing a unique identification code for the archival creator."
+    },
+    {
+        "id": "SIP31",
+        "specification": "SIP",
+        "level": "MUST",
+        "name": "Classification of the preservation agent additional information",
+        "location": "metsHdr/agent/note/@csip:NOTETYPE",
+        "cardinality": "1..1",
+        "description": "The preservation agent note is typed with the value of \"IDENTIFICATIONCODE\"."
+    },
+    {
+        "id": "SIP32",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "File format name",
+        "location": "fileSec/fileGrp/file/@sip:FILEFORMATNAME",
+        "cardinality": "0..1",
+        "description": "An optional attribute may be used if the MIMETYPE is not sufficient for the purposes of processing the information package. Example: \"Extensible Markup Language\" Example: \"PDF/A\" Example: \"ISO/IEC 26300:2006\""
+    },
+    {
+        "id": "SIP33",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "File format version",
+        "location": "fileSec/fileGrp/file/@sip:FILEFORMATVERSION",
+        "cardinality": "0..1",
+        "description": "The version of the file format when the use of PREMIS has not been agreed upon in the submission agreement. Example: \"1.0\""
+    },
+    {
+        "id": "SIP34",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "File format registry",
+        "location": "fileSec/fileGrp/file/@sip:FILEFORMATREGISTRY",
+        "cardinality": "0..1",
+        "description": "The name of the format registry used to identify the file format when the use of PREMIS has not been agreed upon in the submission agreement. Example: \"PRONOM\""
+    },
+    {
+        "id": "SIP35",
+        "specification": "SIP",
+        "level": "MAY",
+        "name": "File format registry key",
+        "location": "fileSec/fileGrp/file/@sip:FILEFORMATKEY",
+        "cardinality": "0..1",
+        "description": "Key of the file format in the registry when use of PREMIS has not been agreed upon in the submission agreement. Example: \"fmt/101\""
+    },
+    {
+        "id": "DIP1",
+        "specification": "DIP",
+        "level": "MUST",
+        "name": "Package Identifier",
+        "location": "mets/@OBJID",
+        "cardinality": "1..1",
+        "description": "Note that the value of the `mets/@OBJID attribute` for the DIP is expected to be different from the SIP and AIP to reflect the creation of a new package."
+    },
+    {
+        "id": "DIP2",
+        "specification": "DIP",
+        "level": "MUST",
+        "name": "METS Profile",
+        "location": "mets/@PROFILE",
+        "cardinality": "1..1",
+        "description": "The value is set to \"https://earkdip.dilcis.eu/profile/E-ARK-DIP.xml\"."
+    },
+    {
+        "id": "DIP3",
+        "specification": "DIP",
+        "level": "MUST",
+        "name": "OAIS Package type information",
+        "location": "metsHdr[@csip:OAISPACKAGETYPE=`DIP`]",
+        "cardinality": "1..1",
+        "description": "The in CSIP added attribute `@csip:OAISPACKAGETYPE` is used with the value \"DIP\"."
+    },
+    {
+        "id": "DIP4",
+        "specification": "DIP",
+        "level": "SHOULD",
+        "name": "Status of the descriptive metadata",
+        "location": "dmdSec/@STATUS",
+        "cardinality": "0..1",
+        "description": "Indicates the status of the package using a fixed vocabulary. The status SHOULD in a DIP be set to \"CURRENT\"."
+    }
+]

@@ -1,0 +1,65 @@
+[
+    {
+        "id": "EARKIP-XML",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "Well-formed METS",
+        "location": null,
+        "cardinality": null,
+        "description": "Every METS.xml of the package is well-formed XML without a DOCTYPE."
+    },
+    {
+        "id": "EARKIP-XSD",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "Schema-valid METS",
+        "location": null,
+        "cardinality": null,
+        "description": "Every METS.xml of the package is valid against METS 1.12 and the DILCIS extension schemas."
+    },
+    {
+        "id": "EARKIP-REFERENCE",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "Referenced file exists",
+        "location": "mets/fileSec/fileGrp/file/FLocat/@xlink:href | mets/*/*/mdRef/@xlink:href | mets/structMap/div/div/mptr/@xlink:href",
+        "cardinality": null,
+        "description": "Every file a METS document points to with a relative URL is present in the package."
+    },
+    {
+        "id": "EARKIP-SIZE",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "File size matches",
+        "location": "mets/fileSec/fileGrp/file/@SIZE | mets/*/*/mdRef/@SIZE",
+        "cardinality": null,
+        "description": "The size recorded in METS equals the size of the file in bytes."
+    },
+    {
+        "id": "EARKIP-CHECKSUM",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "Checksum matches",
+        "location": "mets/fileSec/fileGrp/file/@CHECKSUM | mets/*/*/mdRef/@CHECKSUM",
+        "cardinality": null,
+        "description": "The checksum recorded in METS equals the checksum of the file, computed with the algorithm in @CHECKSUMTYPE."
+    },
+    {
+        "id": "EARKIP-UNREFERENCED",
+        "specification": "EARKIP",
+        "level": "SHOULD",
+        "name": "Every file is referenced",
+        "location": null,
+        "cardinality": null,
+        "description": "Every file in the package is referenced from a METS document of the package, apart from the package METS.xml itself."
+    },
+    {
+        "id": "EARKIP-REPRESENTATION",
+        "specification": "EARKIP",
+        "level": "MUST",
+        "name": "Representation METS readable",
+        "location": "mets/structMap/div/div/mptr",
+        "cardinality": null,
+        "description": "A representation METS document the package METS points to can be read."
+    }
+]

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Validates a METS document of an E-ARK package offline: METS 1.12 with
+  local xlink, plus the CSIP and SIP extension attributes of the DILCIS
+  Board. Written for kraenzle-ritter/eark-ip; not part of the
+  specifications.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import namespace="http://www.loc.gov/METS/" schemaLocation="../../../schemas/mets.xsd"/>
+    <xs:import namespace="https://DILCIS.eu/XML/METS/CSIPExtensionMETS" schemaLocation="DILCISExtensionMETS.xsd"/>
+    <xs:import namespace="https://DILCIS.eu/XML/METS/SIPExtensionMETS" schemaLocation="DILCISExtensionSIPMETS.xsd"/>
+</xs:schema>
