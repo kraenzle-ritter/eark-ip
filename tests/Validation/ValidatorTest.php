@@ -12,6 +12,10 @@ use KraenzleRitter\EarkIp\Validation\Outcome;
 use KraenzleRitter\EarkIp\Validation\Severity;
 use KraenzleRitter\EarkIp\Validation\ValidationReport;
 use KraenzleRitter\EarkIp\Validation\Validator;
+use KraenzleRitter\EarkIp\Writer\PackageBuilder;
+use KraenzleRitter\EarkIp\Writer\PackageWriter;
+use KraenzleRitter\EarkIp\Writer\RepresentationBuilder;
+use KraenzleRitter\EarkIp\Writer\StringContent;
 use KraenzleRitter\EarkIp\Xml\Ns;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -214,6 +218,16 @@ final class ValidatorTest extends TestCase
 
         $this->assertViolation($report, 'CSIPSTR15', Severity::Warning, 'not in a schemas folder');
         $this->assertViolation($report, 'CSIP79', Severity::Error, 'schemas/xlink.xsd');
+    }
+
+    public function test_schema_files_that_are_content_are_not_misplaced_schemas(): void
+    {
+        // An eCH-0160 delivery carries its header/xsd/ as content (found with a KOST SIP).
+        $builder = PackageBuilder::sip('content-xsd')->submitter('Office');
+        $builder->representation('rep1', fn (RepresentationBuilder $r) => $r->file(new StringContent('<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>', 'arelda.xsd'), 'header/xsd/arelda.xsd'));
+        $package = (new PackageWriter)->write($builder, $this->temporaryFile());
+
+        $this->assertSame(Outcome::Passed, (new Validator)->validate($package)->finding('CSIPSTR15')?->outcome);
     }
 
     public function test_missing_mets(): void

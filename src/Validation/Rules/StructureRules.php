@@ -121,6 +121,10 @@ final class StructureRules implements RuleSet
     {
         $context->expect('CSIPSTR15', $context->source->hasDirectory('schemas'), 'There is no schemas folder.', new Location('/'));
         foreach ($context->source->files() as $file) {
+            // Files of a representation's data are content, even when they are schemas.
+            if (preg_match('#^representations/[^/]+/data/#', $file) === 1) {
+                continue;
+            }
             if (str_ends_with(strtolower($file), '.xsd') && preg_match('#(^|/)schemas/#', $file) !== 1) {
                 $context->fail('CSIPSTR15', "The schema {$file} is not in a schemas folder.", new Location($file));
             }
