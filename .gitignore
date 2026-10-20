@@ -8,3 +8,4 @@ composer.lock
 .DS_Store
 /tests/corpus/
 /tools/commons-ip/
+commons-ip*.log.txt
