@@ -116,7 +116,8 @@ $package->submission;                     // AIP: the SIP under submission/
 
 Reading does not validate: a package with errors can still be read, as
 long as its `METS.xml` is well-formed. ZIPs are read in place, not
-unpacked.
+unpacked. Packages in TAR archives (CSIPSTR3, AIP28) are not supported
+yet; unpack them first.
 
 ## Write
 
