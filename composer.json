@@ -48,6 +48,9 @@
       "KraenzleRitter\\EarkIp\\Tests\\": "tests/"
     }
   },
+  "bin": [
+    "bin/eark-ip"
+  ],
   "scripts": {
     "test": "phpunit",
     "analyse": "phpstan analyse",

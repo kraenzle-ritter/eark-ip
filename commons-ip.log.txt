@@ -1,0 +1,10 @@
+2026-10-20 11:13:56,239 [main] DEBUG (o.r.c.u.LogSystem) Operating system: Mac OS X
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Architecture: aarch64
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Version: 26.7.1
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Java vendor: Homebrew
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Java version: 26.0.1
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Java class version: 70.0
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Default Charset reported by java: UTF-8
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) Default Charset used by StreamWriter: UTF8
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.u.LogSystem) file.encoding property: UTF-8
+2026-10-20 11:13:56,240 [main] DEBUG (o.r.c.c.Validate) command executed: validate -i /private/tmp/claude-501/-Users-ak-Sites-agate/3d86671d-b965-4154-a603-aa9844c1ac93/scratchpad/out/dip.zip -o /var/folders/k6/7l560nhj1sx0_sng1fkw25_w0000gn/T/tmp.tnMPykqW6X --specification-version 2.2.0
