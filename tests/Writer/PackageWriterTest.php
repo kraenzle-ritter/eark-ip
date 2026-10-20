@@ -143,6 +143,40 @@ final class PackageWriterTest extends TestCase
         $this->assertNotFalse($zip->locateName('sip-1/representations/rep1/documentation/'));
     }
 
+    public function test_unregistered_media_type_becomes_octet_stream_and_the_puid_stays(): void
+    {
+        $builder = PackageBuilder::sip('sip-wav')->submitter('Office');
+        $builder->representation('rep1', fn (RepresentationBuilder $r) => $r
+            ->file(new StringContent('RIFF', 'interview.wav'), null, 'audio/x-wav', 'fmt/141')
+            ->file(new StringContent('%PDF', 'brief.pdf'), null, 'application/pdf', 'fmt/276'));
+        $zip = (new PackageWriter)->write($builder, $this->temporaryFile());
+
+        $files = [];
+        foreach ((new PackageReader)->read($zip)->representation('rep1')?->mets?->files() ?? [] as $file) {
+            $files[basename((string) $file->href)] = $file;
+        }
+        $this->assertSame('application/octet-stream', $files['interview.wav']->mimeType);
+        $this->assertSame('fmt/141', $files['interview.wav']->formatKey);
+        $this->assertSame('PRONOM', $files['interview.wav']->formatRegistry);
+        $this->assertSame('application/pdf', $files['brief.pdf']->mimeType);
+
+        $report = (new Validator)->validate($zip);
+        $this->assertTrue($report->isValid(), $this->describe($report));
+        $this->assertSame(Outcome::Passed, $report->finding('SIP35')?->outcome);
+        $this->assertNotSame(Outcome::Failed, $report->finding('CSIP68')?->outcome);
+    }
+
+    public function test_format_attributes_only_in_a_sip(): void
+    {
+        $builder = PackageBuilder::dip('dip-wav');
+        $builder->representation('rep1', fn (RepresentationBuilder $r) => $r->file(new StringContent('RIFF', 'a.wav'), null, 'audio/x-wav', 'fmt/141'));
+        $zip = (new PackageWriter)->write($builder, $this->temporaryFile());
+
+        $file = (new PackageReader)->read($zip)->representation('rep1')?->mets?->files()[0];
+        $this->assertSame('application/octet-stream', $file?->mimeType);
+        $this->assertNull($file?->formatKey);
+    }
+
     public function test_no_aip_2_1_0(): void
     {
         $this->expectException(UnsupportedVersionException::class);

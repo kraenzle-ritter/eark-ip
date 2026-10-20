@@ -75,5 +75,6 @@ since they break on case-sensitive file systems.
   to lead to a folder (its CSIP107). The writer always writes a
   Documentation division (CSIP93 SHOULD) and therefore always creates
   `documentation/`, empty when there is none (since 0.1.1).
+- **Media types (CSIP68).** commons-ip accepts in `@MIMETYPE` only media types registered with the IANA and reports anything else as an error, `x-` types included. CSIP 2.2 only *strongly recommends* the IANA list and allows another one by agreement. Some common formats have no registered type: WAV (`audio/x-wav`, `audio/wav`) is the case that turned up, in a KOST test SIP (2026-10-20). Position: the validator warns for every unregistered type; the writer writes `application/octet-stream` instead and keeps the format as PRONOM PUID in `sip:FILEFORMATKEY` (SIP only) and, where the caller writes PREMIS, in PREMIS (since 0.1.2).
 - **AIP9.** commons-ip requires AIP file IDs to start with "ID"; all IDs the
   writer produces do.

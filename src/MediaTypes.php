@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace KraenzleRitter\EarkIp\Validation\Rules;
+namespace KraenzleRitter\EarkIp;
 
-use KraenzleRitter\EarkIp\Resources;
-
-/** The IANA media type registry, shipped as resources/iana-media-types.txt. */
+/**
+ * The IANA media type registry, shipped as resources/iana-media-types.txt.
+ * commons-ip accepts only registered types in @MIMETYPE (CSIP68), so the
+ * writer replaces an unregistered type by application/octet-stream.
+ */
 final class MediaTypes
 {
     private const TOP_LEVEL = ['application', 'audio', 'example', 'font', 'haptics', 'image', 'message', 'model', 'multipart', 'text', 'video'];
@@ -27,5 +29,19 @@ final class MediaTypes
         }
 
         return isset(self::$registered[strtolower($mediaType)]);
+    }
+
+    public const FALLBACK = 'application/octet-stream';
+
+    /**
+     * The value to write into @MIMETYPE: the type itself when IANA
+     * registers it, else application/octet-stream. Parameters such as
+     * "; charset=…" are dropped for the check, kept in the result.
+     */
+    public static function forMets(string $mediaType): string
+    {
+        $type = strtolower(trim(explode(';', $mediaType)[0]));
+
+        return self::isRegistered($type) ? $mediaType : self::FALLBACK;
     }
 }

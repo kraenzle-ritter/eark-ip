@@ -6,6 +6,7 @@ namespace KraenzleRitter\EarkIp\Writer;
 
 use DOMDocument;
 use DOMElement;
+use KraenzleRitter\EarkIp\MediaTypes;
 use KraenzleRitter\EarkIp\Model\Agent;
 use KraenzleRitter\EarkIp\Model\AltRecordId;
 use KraenzleRitter\EarkIp\Model\MetadataSection;
@@ -46,6 +47,7 @@ final class MetsBuilder
         $this->root = $this->document->createElementNS(Ns::METS, 'mets');
         $this->document->appendChild($this->root);
         $this->root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:csip', Ns::CSIP);
+        $this->root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:sip', Ns::SIP);
         $this->root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', Ns::XLINK);
         $this->root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', Ns::XSI);
         $this->root->setAttribute('OBJID', $objId);
@@ -143,9 +145,14 @@ final class MetsBuilder
     /**
      * A fileGrp with the given files (absolute paths).
      *
+     * MIME types IANA does not register become application/octet-stream
+     * (commons-ip rejects them); a PRONOM PUID keeps the format on record as
+     * sip:FILEFORMATREGISTRY and sip:FILEFORMATKEY (SIP34, SIP35).
+     *
      * @param  array<string, string|null>  $files  absolute path => MIME type or null to detect
+     * @param  array<string, string>  $puids  absolute path => PRONOM PUID
      */
-    public function fileGroup(string $use, string $id, array $files, ?string $contentInformationType = null, ?string $otherContentInformationType = null): void
+    public function fileGroup(string $use, string $id, array $files, ?string $contentInformationType = null, ?string $otherContentInformationType = null, array $puids = []): void
     {
         $this->fileSec ??= $this->element('fileSec', ['ID' => $this->objIdPrefix('fileSec')]);
         $group = $this->element('fileGrp', ['ID' => $id, 'USE' => $use], $this->fileSec);
@@ -156,8 +163,12 @@ final class MetsBuilder
             $group->setAttributeNS(Ns::CSIP, 'csip:OTHERCONTENTINFORMATIONTYPE', $otherContentInformationType);
         }
         foreach ($files as $path => $mimeType) {
-            $file = $this->element('file', ['ID' => Ids::for('file', $this->objId, $this->relative($path)), 'MIMETYPE' => $mimeType ?? MimeTypes::detect($path)], $group);
+            $file = $this->element('file', ['ID' => Ids::for('file', $this->objId, $this->relative($path)), 'MIMETYPE' => MediaTypes::forMets($mimeType ?? MimeTypes::detect($path))], $group);
             $this->fileAttributes($file, $path);
+            if (isset($puids[$path])) {
+                $file->setAttributeNS(Ns::SIP, 'sip:FILEFORMATREGISTRY', 'PRONOM');
+                $file->setAttributeNS(Ns::SIP, 'sip:FILEFORMATKEY', $puids[$path]);
+            }
             $location = $this->element('FLocat', ['LOCTYPE' => 'URL'], $file);
             $location->setAttributeNS(Ns::XLINK, 'xlink:type', 'simple');
             $location->setAttributeNS(Ns::XLINK, 'xlink:href', $this->href($path));

@@ -156,6 +156,17 @@ the same METS. A ZIP has a single root folder named after `OBJID`.
 Metadata types METS knows (`EAD`, `DC`, `PREMIS` …) go into `@MDTYPE`;
 any other name becomes `MDTYPE="OTHER"` with `@OTHERMDTYPE`.
 
+### Media types
+
+`@MIMETYPE` holds only media types the IANA registers (shipped list in `resources/iana-media-types.txt`). commons-ip rejects any other value as an error of CSIP68, and some common formats have no registered type at all — WAV for one (`audio/x-wav`, `audio/wav` are not registered). The writer therefore writes `application/octet-stream` for an unregistered type. To keep the format on record, pass its PRONOM PUID; in a SIP it goes into `sip:FILEFORMATREGISTRY="PRONOM"` and `sip:FILEFORMATKEY` (SIP34, SIP35):
+
+```php
+$rep->file('/path/interview.wav', 'audio/interview.wav', 'audio/x-wav', 'fmt/141');
+// <file MIMETYPE="application/octet-stream" sip:FILEFORMATREGISTRY="PRONOM" sip:FILEFORMATKEY="fmt/141" …>
+```
+
+The validator reports an unregistered type, `x-` types included, as a warning under CSIP68: CSIP allows another list by agreement between sender and archive.
+
 ### AIP and DIP
 
 ```php

@@ -288,8 +288,9 @@ final class ValidatorTest extends TestCase
         $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'other/plain'));
         $this->assertViolation((new Validator)->validate($root), 'CSIP68', Severity::Error, 'top-level');
 
-        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'application/x-tar'));
-        $this->assertNotSame(Outcome::Failed, (new Validator)->validate($root)->finding('CSIP68')?->outcome);
+        // x- types are not registered either; commons-ip rejects them, this validator warns.
+        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'audio/x-wav'));
+        $this->assertViolation((new Validator)->validate($root), 'CSIP68', Severity::Warning, 'commons-ip');
     }
 
     public function test_structure_is_judged_even_without_readable_mets(): void

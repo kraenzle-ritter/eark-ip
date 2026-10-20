@@ -73,15 +73,19 @@ final class Derivation
             }
             $prefix = $representation->path.'/data/';
             $mimeTypes = [];
+            $puids = [];
             $representationMets = $representation->mets;
             foreach ($representationMets?->files() ?? [] as $file) {
                 $path = $representationMets?->resolve($file->href);
                 if ($path !== null) {
                     $mimeTypes[$path] = $file->mimeType;
+                    if ($file->formatKey !== null && strcasecmp((string) $file->formatRegistry, 'PRONOM') === 0) {
+                        $puids[$path] = $file->formatKey;
+                    }
                 }
             }
             foreach ($representation->dataFiles() as $path) {
-                $builder->file(new SourceContent($source, $path), substr($path, strlen($prefix)), $mimeTypes[$path] ?? null);
+                $builder->file(new SourceContent($source, $path), substr($path, strlen($prefix)), $mimeTypes[$path] ?? null, $puids[$path] ?? null);
             }
             if ($representation->mets !== null) {
                 foreach (self::metadata($representation->mets, $source, MetadataSection::Descriptive, $onlyCurrent) as $file) {

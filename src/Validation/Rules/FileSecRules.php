@@ -6,6 +6,7 @@ namespace KraenzleRitter\EarkIp\Validation\Rules;
 
 use DOMElement;
 use KraenzleRitter\EarkIp\Catalog\Vocabulary;
+use KraenzleRitter\EarkIp\MediaTypes;
 use KraenzleRitter\EarkIp\PackageType;
 use KraenzleRitter\EarkIp\Validation\MetsUnderTest;
 use KraenzleRitter\EarkIp\Validation\RuleSet;
@@ -47,8 +48,7 @@ final class FileSecRules implements RuleSet
      * Shared with mdRef: MIMETYPE present, shaped type/subtype, a
      * registered top-level type, and a subtype IANA lists (CSIP26,
      * CSIP40, CSIP53, CSIP68). CSIP allows another list by agreement, so
-     * an unregistered subtype is a warning; x-, vnd. and prs. subtypes
-     * pass.
+     * an unregistered subtype, x- types included, is a warning.
      */
     public static function mimeType(ValidationContext $context, MetsUnderTest $mets, DOMElement $element, string $id, string $path): void
     {
@@ -69,12 +69,14 @@ final class FileSecRules implements RuleSet
         }
 
         $type = strtolower(trim(explode(';', $value)[0]));
-        [$top, $subtype] = explode('/', $type, 2);
+        [$top] = explode('/', $type, 2);
         if (! $context->expect($id, MediaTypes::isTopLevel($top), "{$path}/@MIMETYPE \"{$value}\" has no registered top-level type.", $mets->at($element))) {
             return;
         }
-        if (! preg_match('/^(x-|vnd\.|prs\.)/', $subtype) && ! MediaTypes::isRegistered($type)) {
-            $context->fail($id, "{$path}/@MIMETYPE \"{$value}\" is not in the IANA media type list.", $mets->at($element), Severity::Warning);
+        if (! MediaTypes::isRegistered($type)) {
+            // CSIP allows another list by agreement, so only a warning here;
+            // commons-ip, though, rejects it (see docs/spec-issues.md).
+            $context->fail($id, "{$path}/@MIMETYPE \"{$value}\" is not in the IANA media type list; commons-ip rejects it.", $mets->at($element), Severity::Warning);
         }
     }
 

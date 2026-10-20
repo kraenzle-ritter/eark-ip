@@ -10,7 +10,7 @@ use KraenzleRitter\EarkIp\Source\Path;
 /** One representation: its data files, metadata, documentation and schemas. */
 final class RepresentationBuilder
 {
-    /** @var array<string, array{Content, ?string}> path below data/ => [content, MIME type] */
+    /** @var array<string, array{Content, ?string, ?string}> path below data/ => [content, MIME type, PRONOM PUID] */
     public array $data = [];
 
     /** @var list<MetadataFile> */
@@ -36,15 +36,20 @@ final class RepresentationBuilder
         }
     }
 
-    /** Add a data file at a path below data/, e.g. "letters/1901.pdf". */
-    public function file(Content|string $content, ?string $path = null, ?string $mimeType = null): self
+    /**
+     * Add a data file at a path below data/, e.g. "letters/1901.pdf". A MIME
+     * type IANA does not register is written as application/octet-stream;
+     * give the PRONOM PUID so that the format stays on record
+     * (sip:FILEFORMATKEY).
+     */
+    public function file(Content|string $content, ?string $path = null, ?string $mimeType = null, ?string $puid = null): self
     {
         $content = is_string($content) ? new FileContent($content) : $content;
         $target = Path::normalize($path ?? $content->suggestedName());
         if ($target === null) {
             throw new EarkIpException("\"{$path}\" is not a path inside the representation.");
         }
-        $this->data[$target] = [$content, $mimeType];
+        $this->data[$target] = [$content, $mimeType, $puid];
 
         return $this;
     }

@@ -179,7 +179,8 @@ final class PackageWriter
         $this->mkdir($base.'/documentation');
 
         $data = [];
-        foreach ($representation->data as $path => [$content, $mimeType]) {
+        $puids = [];
+        foreach ($representation->data as $path => [$content, $mimeType, $puid]) {
             $target = $base.'/data/'.$path;
             $this->mkdir(dirname($target));
             if (file_exists($target)) {
@@ -187,6 +188,9 @@ final class PackageWriter
             }
             $content->writeTo($target);
             $data[$target] = $mimeType;
+            if ($puid !== null) {
+                $puids[$target] = $puid;
+            }
         }
         $descriptive = $this->place($base, 'metadata/descriptive', $representation->descriptive);
         $preservation = $this->place($base, 'metadata/preservation', $representation->preservation);
@@ -204,7 +208,8 @@ final class PackageWriter
 
         $divisions = [];
         $dataGroup = Ids::for('fileGrp', $representation->name, 'Data');
-        $mets->fileGroup('Data', $dataGroup, $data);
+        // The SIP format attributes (SIP32–SIP35) belong to SIPs only.
+        $mets->fileGroup('Data', $dataGroup, $data, puids: $package->type === PackageType::SIP ? $puids : []);
         $divisions['Data'] = [[$dataGroup], null];
         if ($documentation !== []) {
             $id = Ids::for('fileGrp', $representation->name, 'Documentation');
