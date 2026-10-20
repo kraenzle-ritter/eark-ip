@@ -6,6 +6,7 @@ namespace KraenzleRitter\EarkIp\Validation\Rules;
 
 use DOMElement;
 use KraenzleRitter\EarkIp\Catalog\Vocabulary;
+use KraenzleRitter\EarkIp\PackageType;
 use KraenzleRitter\EarkIp\Validation\MetsUnderTest;
 use KraenzleRitter\EarkIp\Validation\RuleSet;
 use KraenzleRitter\EarkIp\Validation\Severity;
@@ -106,11 +107,12 @@ final class FileSecRules implements RuleSet
             $this->administrativeIds($context, $mets, $group, $admId);
         }
 
+        // CSIP62 (SHOULD): a representation group states its content information
+        // type, above all in a MIXED package. Groups for documentation or schemas
+        // describe no content, so they need none.
         $type = $mets->attribute($group, 'CONTENTINFORMATIONTYPE', Ns::CSIP);
-        $describesRepresentation = $mets->isPackageMets() && str_starts_with((string) $use, 'Representations');
-        $mixed = $mets->attribute($mets->root(), 'CONTENTINFORMATIONTYPE', Ns::CSIP) === 'MIXED';
-        if ($describesRepresentation || $mixed) {
-            $context->expect('CSIP62', $type !== null, "fileGrp \"{$use}\" describes a representation but has no @csip:CONTENTINFORMATIONTYPE.", $mets->at($group), Severity::Error);
+        if ($mets->isPackageMets() && str_starts_with((string) $use, 'Representations')) {
+            $context->expect('CSIP62', $type !== null, "fileGrp \"{$use}\" describes a representation but has no @csip:CONTENTINFORMATIONTYPE.", $mets->at($group));
         }
         if ($type !== null) {
             $context->expect(
@@ -136,6 +138,10 @@ final class FileSecRules implements RuleSet
     private function packageUse(ValidationContext $context, MetsUnderTest $mets, DOMElement $group, string $use): void
     {
         $terms = Vocabulary::terms($context->version, 'CSIPVocabularyFileGrpAndStructMapDivisionLabel');
+        if ($context->type === PackageType::AIP) {
+            // The AIP keeps the original SIP; its examples and commons-ip name the group so.
+            $terms[] = 'Submission';
+        }
         $known = array_filter($terms, fn (string $term) => stripos($use, $term) === 0);
         if (! $context->expect('CSIP64', $known !== [], "fileGrp/@USE \"{$use}\" does not begin with ".implode(', ', $terms).'.', $mets->at($group))) {
             return;

@@ -26,7 +26,12 @@ final class HeaderRules implements RuleSet
             assert($header instanceof DOMElement);
             $this->dates($context, $mets, $header);
             $this->packageType($context, $mets, $header);
-            $this->softwareAgent($context, $mets, $header);
+            $mets->isPackageMets()
+                ? $this->softwareAgent($context, $mets, $header)
+                : $context->leniently(
+                    '(Representation METS: a warning only, since commons-ip and RODA write no agents there.)',
+                    fn () => $this->softwareAgent($context, $mets, $header),
+                );
         }
     }
 

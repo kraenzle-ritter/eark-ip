@@ -100,7 +100,7 @@ final class ValidatorTest extends TestCase
         yield 'EARKIP-CHECKSUMTYPE not computable' => [fn ($x) => self::setAttribute($x, $provRef, 'CHECKSUMTYPE', 'HAVAL'), 'EARKIP-CHECKSUMTYPE', Severity::Warning, 'HAVAL'];
         yield 'CSIP59 fileSec without ID' => [fn ($x) => self::removeAttribute($x, '/mets:mets/mets:fileSec', 'ID'), 'CSIP59', Severity::Error, 'fileSec/@ID'];
         yield 'CSIP60 no Documentation group' => [fn ($x) => self::remove($x, "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Documentation'] | {$div}/mets:div[@LABEL='Documentation']"), 'CSIP60', Severity::Warning, 'Documentation'];
-        yield 'CSIP62 representation group without content information type' => [fn ($x) => self::removeAttribute($x, "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Representations/rep1']", 'CONTENTINFORMATIONTYPE', Ns::CSIP), 'CSIP62', Severity::Error, 'CONTENTINFORMATIONTYPE'];
+        yield 'CSIP62 representation group without content information type' => [fn ($x) => self::removeAttribute($x, "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Representations/rep1']", 'CONTENTINFORMATIONTYPE', Ns::CSIP), 'CSIP62', Severity::Warning, 'CONTENTINFORMATIONTYPE'];
         yield 'CSIP64 USE outside vocabulary' => [fn ($x) => self::setAttribute($x, "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Documentation']", 'USE', 'Manuals'), 'CSIP64', Severity::Error, 'does not begin'];
         yield 'CSIP64 USE names no folder' => [fn ($x) => self::setAttribute($x, "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Representations/rep1']", 'USE', 'Representations/rep9'), 'CSIP64', Severity::Error, 'folder'];
         yield 'CSIP68 file without MIMETYPE' => [fn ($x) => self::removeAttribute($x, $file, 'MIMETYPE'), 'CSIP68', Severity::Error, 'MIMETYPE'];
@@ -165,6 +165,17 @@ final class ValidatorTest extends TestCase
 
         $this->assertFalse($report->isValid());
         $this->assertViolation($report, 'CSIP71', Severity::Error, 'representations/rep1/data/report.txt');
+    }
+
+    public function test_missing_agent_in_representation_mets_is_only_a_warning(): void
+    {
+        $root = $this->copyFixture('sip-2.2.0');
+        $this->editXml($root.'/representations/rep1/METS.xml', fn (DOMXPath $x) => self::remove($x, '/mets:mets/mets:metsHdr/mets:agent'));
+
+        $report = (new Validator)->validate($root);
+
+        // Only CSIP10, not an error; the changed METS also breaks its checksum (CSIP71).
+        $this->assertViolation($report, 'CSIP10', Severity::Warning, 'commons-ip');
     }
 
     public function test_unreadable_representation_mets(): void

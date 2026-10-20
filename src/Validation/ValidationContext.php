@@ -71,7 +71,32 @@ final class ValidationContext
     public function fail(string $id, string $message, ?Location $location = null, ?Severity $severity = null): void
     {
         $this->checked[$id] = true;
+        if ($this->lenient !== null && ($severity ?? Severity::forLevel($this->catalog->get($id)->level)) === Severity::Error) {
+            $severity = Severity::Warning;
+            $message .= ' '.$this->lenient;
+        }
         $this->violations[$id][] = new Violation($message, $location, $severity);
+    }
+
+    /** Set while checking parts where errors are reported as warnings, with the reason appended. */
+    private ?string $lenient = null;
+
+    /**
+     * Run checks whose errors count as warnings, e.g. header rules in a
+     * representation METS, which the profile does not clearly require
+     * and common tools do not write.
+     *
+     * @param  callable(): void  $checks
+     */
+    public function leniently(string $reason, callable $checks): void
+    {
+        $previous = $this->lenient;
+        $this->lenient = $reason;
+        try {
+            $checks();
+        } finally {
+            $this->lenient = $previous;
+        }
     }
 
     /** Check a condition; returns it so callers can stop following up on a failure. */

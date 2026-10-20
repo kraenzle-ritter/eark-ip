@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace KraenzleRitter\EarkIp\Writer;
+
+/** Something to write into a package: a file on disk, a string, or a file of another package. */
+interface Content
+{
+    /** Write the content to the given path, streaming where possible. */
+    public function writeTo(string $path): void;
+
+    /** When the content was created, for @CREATED; null when unknown. */
+    public function created(): ?\DateTimeImmutable;
+
+    /** A file name to use when the caller gives none. */
+    public function suggestedName(): string;
+}
