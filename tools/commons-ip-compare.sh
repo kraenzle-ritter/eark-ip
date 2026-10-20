@@ -16,7 +16,9 @@ if [ ! -f "$JAR" ]; then
 fi
 for package in "$@"; do
   REPORTS="$(mktemp -d)"
-  java -DcommonsIp.home="$REPORTS" -jar "$JAR" validate -i "$package" -o "$REPORTS" --specification-version 2.2.0 > /dev/null 2>&1 || true
+  absolute="$(cd "$(dirname "$package")" && pwd)/$(basename "$package")"
+  # commons-ip writes commons-ip.log.txt into the working directory
+  (cd "$REPORTS" && java -jar "$JAR" validate -i "$absolute" -o "$REPORTS" --specification-version 2.2.0 > /dev/null 2>&1) || true
   echo "== $package"
   php -r '
     foreach (glob($argv[1]."/*.json") as $file) {
