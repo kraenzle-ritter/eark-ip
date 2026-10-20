@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premis xmlns="http://www.loc.gov/premis/v3" version="3.0">
+  <object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="representation">
+    <objectIdentifier>
+      <objectIdentifierType>local</objectIdentifierType>
+      <objectIdentifierValue>rep1</objectIdentifierValue>
+    </objectIdentifier>
+  </object>
+</premis>

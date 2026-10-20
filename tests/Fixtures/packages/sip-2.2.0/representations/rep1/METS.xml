@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:csip="https://DILCIS.eu/XML/METS/CSIPExtensionMETS" xmlns:sip="https://DILCIS.eu/XML/METS/SIPExtensionMETS" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OBJID="rep1" TYPE="Textual works – Digital" csip:CONTENTINFORMATIONTYPE="OTHER" csip:OTHERCONTENTINFORMATIONTYPE="Plain files" PROFILE="https://earksip.dilcis.eu/profile/E-ARK-SIP-v2-2-0.xml">
+  <metsHdr CREATEDATE="2025-03-01T10:00:00Z" LASTMODDATE="2025-03-01T10:00:00Z" csip:OAISPACKAGETYPE="SIP">
+    <agent ROLE="CREATOR" TYPE="OTHER" OTHERTYPE="SOFTWARE"><name>eark-ip fixtures</name><note csip:NOTETYPE="SOFTWARE VERSION">1.0</note></agent>
+    <agent ROLE="CREATOR" TYPE="ORGANIZATION"><name>Example Office</name></agent>
+  </metsHdr>
+  <amdSec ID="rep1-amd">
+    <digiprovMD ID="rep1-amd-premis" STATUS="CURRENT">
+      <mdRef ID="rep1-amd-premis-ref" LOCTYPE="URL" xlink:type="simple" xlink:href="metadata/preservation/premis.xml" MDTYPE="PREMIS" MIMETYPE="text/xml" SIZE="374" CREATED="2025-03-01T10:00:00Z" CHECKSUM="f283b3629b6c12a8de6906a4506a4954af03655c6307abd23ca5fca09fc4e63e" CHECKSUMTYPE="SHA-256"/>
+    </digiprovMD>
+  </amdSec>
+  <fileSec ID="rep1-fileSec">
+    <fileGrp ID="rep1-data" USE="Data">
+      <file ID="rep1-file-report" MIMETYPE="text/plain" SIZE="19" CREATED="2025-03-01T10:00:00Z" CHECKSUM="fee6934116799e439f2b8bbabb9b5bc31afaacd96915e11a6c73e2c9b997d3a1" CHECKSUMTYPE="SHA-256"><FLocat LOCTYPE="URL" xlink:type="simple" xlink:href="data/report.txt"/></file>
+    </fileGrp>
+  </fileSec>
+  <structMap ID="rep1-structMap" TYPE="PHYSICAL" LABEL="CSIP">
+    <div ID="rep1-div" LABEL="rep1">
+      <div ID="rep1-div-metadata" LABEL="Metadata" ADMID="rep1-amd-premis"/>
+      <div ID="rep1-div-data" LABEL="Data"><fptr FILEID="rep1-data"/></div>
+    </div>
+  </structMap>
+</mets>

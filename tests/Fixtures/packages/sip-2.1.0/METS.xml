@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:csip="https://DILCIS.eu/XML/METS/CSIPExtensionMETS" xmlns:sip="https://DILCIS.eu/XML/METS/SIPExtensionMETS" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/METS/ schemas/mets.xsd http://www.w3.org/1999/xlink schemas/xlink.xsd" OBJID="sip-2.1.0" LABEL="Annual report 2025" TYPE="Textual works – Digital" csip:CONTENTINFORMATIONTYPE="OTHER" csip:OTHERCONTENTINFORMATIONTYPE="Plain files" PROFILE="https://earksip.dilcis.eu/profile/E-ARK-SIP.xml">
+  <metsHdr CREATEDATE="2025-03-01T10:00:00Z" LASTMODDATE="2025-03-01T10:00:00Z" RECORDSTATUS="NEW" csip:OAISPACKAGETYPE="SIP">
+    <agent ROLE="CREATOR" TYPE="OTHER" OTHERTYPE="SOFTWARE"><name>eark-ip fixtures</name><note csip:NOTETYPE="SOFTWARE VERSION">1.0</note></agent>
+    <agent ROLE="ARCHIVIST" TYPE="ORGANIZATION"><name>Example Office</name><note csip:NOTETYPE="IDENTIFICATIONCODE">EX-1</note></agent>
+    <agent ROLE="CREATOR" TYPE="ORGANIZATION"><name>Example Office</name><note csip:NOTETYPE="IDENTIFICATIONCODE">EX-1</note></agent>
+    <agent ROLE="PRESERVATION" TYPE="ORGANIZATION"><name>Example Archives</name></agent>
+    <altRecordID TYPE="SUBMISSIONAGREEMENT">SA-2025-01</altRecordID>
+  </metsHdr>
+  <dmdSec ID="dmd-dc" CREATED="2025-03-01T10:00:00Z" STATUS="CURRENT">
+    <mdRef ID="dmd-dc-ref" LOCTYPE="URL" xlink:type="simple" xlink:href="metadata/descriptive/dc.xml" MDTYPE="DC" MIMETYPE="text/xml" SIZE="174" CREATED="2025-03-01T10:00:00Z" CHECKSUM="e00e6cf263b08cf6c6c17ae0c61d4fd95c832e44d79302041d77ad77b3857dc2" CHECKSUMTYPE="SHA-256"/>
+  </dmdSec>
+  <amdSec ID="amd">
+    <digiprovMD ID="amd-premis" STATUS="CURRENT">
+      <mdRef ID="amd-premis-ref" LOCTYPE="URL" xlink:type="simple" xlink:href="metadata/preservation/premis.xml" MDTYPE="PREMIS" MIMETYPE="text/xml" SIZE="652" CREATED="2025-03-01T10:00:00Z" CHECKSUM="f850681ea2a72e33f9779b8ee92597bac109c6d2938ab24cb98a26f6344bbe74" CHECKSUMTYPE="SHA-256"/>
+    </digiprovMD>
+  </amdSec>
+  <fileSec ID="fileSec">
+    <fileGrp ID="grp-documentation" USE="Documentation">
+      <file ID="file-readme" MIMETYPE="text/plain" SIZE="59" CREATED="2025-03-01T10:00:00Z" CHECKSUM="4bd8b3d7c67bd6a1db10ac9d841f0c69538a185ccf6c6c1f7246e7b930de3203" CHECKSUMTYPE="SHA-256"><FLocat LOCTYPE="URL" xlink:type="simple" xlink:href="documentation/readme.txt"/></file>
+    </fileGrp>
+    <fileGrp ID="grp-schemas" USE="Schemas">
+      <file ID="file-xlink" MIMETYPE="application/xml" SIZE="3180" CREATED="2025-03-01T10:00:00Z" CHECKSUM="f1f5bb6003165cdd8f6c1fcc32f8fd1f965e1681010f3b9806d9460bcffa8a3c" CHECKSUMTYPE="SHA-256"><FLocat LOCTYPE="URL" xlink:type="simple" xlink:href="schemas/xlink.xsd"/></file>
+    </fileGrp>
+    <fileGrp ID="grp-rep1" USE="Representations/rep1" csip:CONTENTINFORMATIONTYPE="OTHER" csip:OTHERCONTENTINFORMATIONTYPE="Plain files">
+      <file ID="file-rep1-mets" MIMETYPE="application/xml" SIZE="1895" CREATED="2025-03-01T10:00:00Z" CHECKSUM="a8fedd2e562f55fb3ca41cf83f0dbd037901ed09b497fa519b162ef4acb453ed" CHECKSUMTYPE="SHA-256"><FLocat LOCTYPE="URL" xlink:type="simple" xlink:href="representations/rep1/METS.xml"/></file>
+    </fileGrp>
+  </fileSec>
+  <structMap ID="structMap" TYPE="PHYSICAL" LABEL="CSIP">
+    <div ID="div-root" LABEL="sip-2.1.0">
+      <div ID="div-metadata" LABEL="Metadata" DMDID="dmd-dc" ADMID="amd-premis"/>
+      <div ID="div-documentation" LABEL="Documentation"><fptr FILEID="grp-documentation"/></div>
+      <div ID="div-schemas" LABEL="Schemas"><fptr FILEID="grp-schemas"/></div>
+      <div ID="div-representations" LABEL="Representations"><fptr FILEID="grp-rep1"/></div>
+      <div ID="div-rep1" LABEL="Representations/rep1">
+        <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="representations/rep1/METS.xml" xlink:title="grp-rep1"/>
+      </div>
+    </div>
+  </structMap>
+</mets>

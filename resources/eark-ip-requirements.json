@@ -18,31 +18,22 @@
         "description": "Every METS.xml of the package is valid against METS 1.12 and the DILCIS extension schemas."
     },
     {
-        "id": "EARKIP-REFERENCE",
+        "id": "EARKIP-CHECKSUMTYPE",
         "specification": "EARKIP",
-        "level": "MUST",
-        "name": "Referenced file exists",
-        "location": "mets/fileSec/fileGrp/file/FLocat/@xlink:href | mets/*/*/mdRef/@xlink:href | mets/structMap/div/div/mptr/@xlink:href",
+        "level": "SHOULD",
+        "name": "Checksum can be verified",
+        "location": "mets/fileSec/fileGrp/file/@CHECKSUMTYPE | mets/*/*/mdRef/@CHECKSUMTYPE",
         "cardinality": null,
-        "description": "Every file a METS document points to with a relative URL is present in the package."
+        "description": "The algorithm in @CHECKSUMTYPE is one this validator can compute (all METS values except HAVAL and MNP), so that the checksum can be verified."
     },
     {
-        "id": "EARKIP-SIZE",
+        "id": "EARKIP-INTEGRITY",
         "specification": "EARKIP",
         "level": "MUST",
-        "name": "File size matches",
-        "location": "mets/fileSec/fileGrp/file/@SIZE | mets/*/*/mdRef/@SIZE",
+        "name": "Other metadata files intact",
+        "location": "mets/amdSec/techMD/mdRef | mets/amdSec/sourceMD/mdRef",
         "cardinality": null,
-        "description": "The size recorded in METS equals the size of the file in bytes."
-    },
-    {
-        "id": "EARKIP-CHECKSUM",
-        "specification": "EARKIP",
-        "level": "MUST",
-        "name": "Checksum matches",
-        "location": "mets/fileSec/fileGrp/file/@CHECKSUM | mets/*/*/mdRef/@CHECKSUM",
-        "cardinality": null,
-        "description": "The checksum recorded in METS equals the checksum of the file, computed with the algorithm in @CHECKSUMTYPE."
+        "description": "Technical and source metadata files exist and match the size and checksum recorded in METS. CSIP numbers these checks only for descriptive, provenance and rights metadata and for files."
     },
     {
         "id": "EARKIP-UNREFERENCED",

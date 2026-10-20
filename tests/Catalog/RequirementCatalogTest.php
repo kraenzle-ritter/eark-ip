@@ -37,7 +37,7 @@ final class RequirementCatalogTest extends TestCase
 
         $this->assertSame(Level::MUST, $catalog->get('CSIPSTR4')->level);
         $this->assertSame(Level::SHOULD, $catalog->get('CSIPSTR2')->level);
-        $this->assertSame(Level::MUST, $catalog->get('EARKIP-CHECKSUM')->level);
+        $this->assertSame(Level::MUST, $catalog->get('EARKIP-XSD')->level);
     }
 
     public function test_aip_requirements_only_in_2_2_0(): void

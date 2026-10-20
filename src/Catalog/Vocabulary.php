@@ -44,6 +44,25 @@ final class Vocabulary
         return in_array($term, self::terms($version, $vocabulary), true);
     }
 
+    /**
+     * Lenient match for values people type by hand: case-insensitive and
+     * with en and em dashes treated as hyphens, so "Textual works -
+     * Digital" and "OTHER" count as the terms "Textual works – Digital"
+     * and "Other".
+     */
+    public static function matches(SpecificationVersion $version, string $vocabulary, string $value): bool
+    {
+        $normalize = fn (string $term) => mb_strtolower(trim(str_replace(['–', '—'], '-', $term)));
+        $needle = $normalize($value);
+        foreach (self::terms($version, $vocabulary) as $term) {
+            if ($normalize($term) === $needle) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** @return list<string> */
     private static function load(SpecificationVersion $version, string $vocabulary): array
     {
