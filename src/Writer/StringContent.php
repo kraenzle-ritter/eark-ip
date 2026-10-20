@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace KraenzleRitter\EarkIp\Writer;
 
-use KraenzleRitter\EarkIp\Exception\EarkIpException;
-
 final class StringContent implements Content
 {
     public function __construct(
@@ -16,9 +14,7 @@ final class StringContent implements Content
 
     public function writeTo(string $path): void
     {
-        if (file_put_contents($path, $this->contents) === false) {
-            throw new EarkIpException("Cannot write {$path}.");
-        }
+        VerifiedCopy::string($this->contents, $path, $this->name);
     }
 
     public function created(): ?\DateTimeImmutable

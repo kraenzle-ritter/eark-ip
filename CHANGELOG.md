@@ -4,6 +4,11 @@ All notable changes to kraenzle-ritter/eark-ip. Format follows [Keep a Changelog
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-20
+
+### Fixed
+- The writer checks every file it copies into a package. Before, `FileContent` only checked that `copy()` did not return false, `SourceContent` and `StringContent` did not check at all, and `SIZE` and `CHECKSUM` in the METS were computed from the copy: a copy cut short (disk full, read error, ZIP entry ending early) carried its own matching checksum and passed validation. Now the data goes to a temporary name, hashed while it is read, the copy is compared with what was read and with the size of the source, and only then renamed into place; otherwise `CopyNotVerifiedException` (an `EarkIpException`) and nothing is left at the target, so no package is written (agate#12).
+
 ## [0.1.2] - 2026-10-20
 
 ### Changed

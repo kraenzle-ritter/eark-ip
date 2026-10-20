@@ -17,9 +17,12 @@ final class FileContent implements Content
 
     public function writeTo(string $path): void
     {
-        if (! copy($this->path, $path)) {
-            throw new EarkIpException("Cannot copy {$this->path} to {$path}.");
+        $in = @fopen($this->path, 'rb');
+        if ($in === false) {
+            throw new EarkIpException("Cannot read {$this->path}.");
         }
+        clearstatcache(true, $this->path);
+        VerifiedCopy::stream($in, $path, (int) filesize($this->path), $this->path);
         touch($path, (int) filemtime($this->path));
     }
 

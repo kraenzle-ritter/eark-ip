@@ -204,6 +204,8 @@ XML is parsed without network access and without entity substitution;
 documents with a DOCTYPE are refused. Schemas inside a package are never
 used for validation.
 
+Writing checks every copy: a file that cannot be copied completely, or whose copy does not match what was read, stops the package with `CopyNotVerifiedException`. `SIZE` and `CHECKSUM` in the METS therefore describe the source, not a damaged copy.
+
 ## Where the specifications disagree
 
 Some requirements contradict each other, the corpus or commons-ip. The

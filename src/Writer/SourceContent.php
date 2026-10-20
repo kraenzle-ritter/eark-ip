@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace KraenzleRitter\EarkIp\Writer;
 
-use KraenzleRitter\EarkIp\Exception\EarkIpException;
 use KraenzleRitter\EarkIp\Source\PackageSource;
 
 /** A file of another package, e.g. a SIP an AIP is built from. */
@@ -18,14 +17,12 @@ final class SourceContent implements Content
 
     public function writeTo(string $path): void
     {
-        $in = $this->source->stream($this->path);
-        $out = fopen($path, 'wb');
-        if ($out === false) {
-            throw new EarkIpException("Cannot write {$path}.");
-        }
-        stream_copy_to_stream($in, $out);
-        fclose($in);
-        fclose($out);
+        VerifiedCopy::stream(
+            $this->source->stream($this->path),
+            $path,
+            $this->source->size($this->path),
+            $this->source->location().'/'.$this->path,
+        );
     }
 
     public function created(): ?\DateTimeImmutable
