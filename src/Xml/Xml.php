@@ -59,7 +59,7 @@ final class Xml
      */
     public static function schemaErrors(DOMDocument $document, string $schemaPath): array
     {
-        self::withErrors(fn () => $document->schemaValidate($schemaPath, LIBXML_SCHEMA_CREATE), $errors);
+        self::withErrors(fn () => $document->schemaValidate($schemaPath), $errors);
 
         return $errors;
     }

@@ -42,21 +42,38 @@ final class FileSecRules implements RuleSet
         $context->notApplicable('CSIP61', 'CSIP62', 'CSIP63', 'CSIP73', 'CSIP74', 'CSIP75');
     }
 
-    /** Shared with mdRef: MIMETYPE present, shaped type/subtype, not overlong (CSIP26, CSIP40, CSIP53, CSIP68). */
+    /**
+     * Shared with mdRef: MIMETYPE present, shaped type/subtype, a
+     * registered top-level type, and a subtype IANA lists (CSIP26,
+     * CSIP40, CSIP53, CSIP68). CSIP allows another list by agreement, so
+     * an unregistered subtype is a warning; x-, vnd. and prs. subtypes
+     * pass.
+     */
     public static function mimeType(ValidationContext $context, MetsUnderTest $mets, DOMElement $element, string $id, string $path): void
     {
         $value = trim((string) $mets->attribute($element, 'MIMETYPE'));
         if (! $context->expect($id, $value !== '', "{$path}/@MIMETYPE is missing or empty.", $mets->at($element))) {
             return;
         }
-        $context->expect(
+        if (! $context->expect(
             $id,
             preg_match('#^[a-z0-9][a-z0-9!\#$&^_.+-]*/[a-z0-9][a-z0-9!\#$&^_.+-]*(\s*;.*)?$#i', $value) === 1,
             "{$path}/@MIMETYPE \"{$value}\" is not a media type of the form type/subtype.",
             $mets->at($element),
-        );
+        )) {
+            return;
+        }
         if (strlen($value) > 256) {
             $context->fail($id, "{$path}/@MIMETYPE is longer than 256 characters.", $mets->at($element), Severity::Warning);
+        }
+
+        $type = strtolower(trim(explode(';', $value)[0]));
+        [$top, $subtype] = explode('/', $type, 2);
+        if (! $context->expect($id, MediaTypes::isTopLevel($top), "{$path}/@MIMETYPE \"{$value}\" has no registered top-level type.", $mets->at($element))) {
+            return;
+        }
+        if (! preg_match('/^(x-|vnd\.|prs\.)/', $subtype) && ! MediaTypes::isRegistered($type)) {
+            $context->fail($id, "{$path}/@MIMETYPE \"{$value}\" is not in the IANA media type list.", $mets->at($element), Severity::Warning);
         }
     }
 

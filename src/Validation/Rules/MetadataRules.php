@@ -81,6 +81,15 @@ final class MetadataRules implements RuleSet
             $context->expect('CSIP32', $digiprov !== [], 'The package METS has no amdSec/digiprovMD (provenance metadata).', $mets->at($mets->root()));
         }
 
+        // The corpus reads CSIP31 and CSIP32 both ways: sections without metadata
+        // files are suspicious too.
+        if ($amdSecs !== [] && $this->filesBelow($context, $base.'metadata/') === []) {
+            $context->fail('CSIP31', "{$mets->path} has an amdSec but {$base}metadata contains no files.", $mets->at($amdSecs[0]), Severity::Warning);
+        }
+        if ($digiprov !== [] && $preservation === []) {
+            $context->fail('CSIP32', "{$mets->path} has a digiprovMD but {$base}metadata/preservation contains no files.", $mets->at($digiprov[0]), Severity::Warning);
+        }
+
         if ($descriptive !== []) {
             $context->expect('CSIP17', $dmdSecs !== [], "{$base}metadata/descriptive contains files but {$mets->path} has no dmdSec.", $mets->at($mets->root()), Severity::Error);
             $context->expect('CSIP21', $mets->elements('/mets:mets/mets:dmdSec/mets:mdRef') !== [], "{$base}metadata/descriptive contains files but no dmdSec has an mdRef.", $mets->at($mets->root()), Severity::Error);
@@ -154,6 +163,10 @@ final class MetadataRules implements RuleSet
     /** @return list<string> */
     private function filesBelow(ValidationContext $context, string $prefix): array
     {
-        return array_values(array_filter($context->source->files(), fn (string $file) => str_starts_with($file, $prefix)));
+        // Hidden placeholders such as .gitkeep are not metadata.
+        return array_values(array_filter(
+            $context->source->files(),
+            fn (string $file) => str_starts_with($file, $prefix) && ! str_starts_with(basename($file), '.'),
+        ));
     }
 }

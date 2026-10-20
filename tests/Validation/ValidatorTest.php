@@ -231,6 +231,52 @@ final class ValidatorTest extends TestCase
         $this->assertViolation($report, 'CSIPSTR1', Severity::Error, 'single root folder');
     }
 
+    public function test_profile_decides_the_rules_when_the_package_type_disagrees(): void
+    {
+        $root = $this->copyFixture('sip-2.2.0');
+        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::element($x, '/mets:mets/mets:metsHdr')->setAttributeNS(Ns::CSIP, 'csip:OAISPACKAGETYPE', 'AIP'));
+
+        $report = (new Validator)->validate($root);
+
+        $this->assertSame(PackageType::SIP, $report->type);
+        $this->assertViolation($report, 'SIP4', Severity::Error, '"SIP"');
+    }
+
+    public function test_reference_case_mismatch_is_a_warning(): void
+    {
+        $root = $this->copyFixture('sip-2.2.0');
+        rename($root.'/documentation/readme.txt', $root.'/documentation/README.txt');
+
+        $report = (new Validator)->validate($root);
+
+        $this->assertViolation($report, 'CSIP79', Severity::Warning, 'case is ignored');
+        $this->assertTrue($report->isValid());
+    }
+
+    public function test_unregistered_media_type_is_a_warning_and_unknown_top_level_an_error(): void
+    {
+        $root = $this->copyFixture('sip-2.2.0');
+        $file = "/mets:mets/mets:fileSec/mets:fileGrp[@USE='Documentation']/mets:file";
+        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'text/made-up'));
+        $this->assertViolation((new Validator)->validate($root), 'CSIP68', Severity::Warning, 'IANA');
+
+        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'other/plain'));
+        $this->assertViolation((new Validator)->validate($root), 'CSIP68', Severity::Error, 'top-level');
+
+        $this->editXml($root.'/METS.xml', fn (DOMXPath $x) => self::setAttribute($x, $file, 'MIMETYPE', 'application/x-tar'));
+        $this->assertNotSame(Outcome::Failed, (new Validator)->validate($root)->finding('CSIP68')?->outcome);
+    }
+
+    public function test_structure_is_judged_even_without_readable_mets(): void
+    {
+        $root = $this->temporaryDirectory();
+        file_put_contents($root.'/METS.xml', '');
+
+        $report = (new Validator)->validate($root);
+
+        $this->assertViolation($report, 'CSIPSTR5', Severity::Warning, 'metadata folder');
+    }
+
     public function test_version_can_be_forced(): void
     {
         $report = (new Validator)->validate(self::fixture('packages/sip-2.1.0'), SpecificationVersion::V2_2_0);

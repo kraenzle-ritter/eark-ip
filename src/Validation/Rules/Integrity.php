@@ -63,6 +63,17 @@ final class Integrity
             }
         }
 
+        foreach ($candidates as $path) {
+            foreach ($context->source->files() as $file) {
+                if (strcasecmp($file, $path) === 0) {
+                    $context->markReferenced($file);
+                    $context->fail($id, "xlink:href \"{$href}\" matches {$file} only when case is ignored; this breaks on case-sensitive file systems.", $mets->at($element), Severity::Warning);
+
+                    return $file;
+                }
+            }
+        }
+
         $context->fail($id, "xlink:href \"{$href}\" points to {$candidates[0]}, which is not in the package.", $mets->at($element));
 
         return null;

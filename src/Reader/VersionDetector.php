@@ -20,7 +20,29 @@ final class VersionDetector
     {
         $value = $mets->header?->oaisPackageType;
 
-        return $value === null ? null : PackageType::tryFrom(strtoupper(trim($value)));
+        if ($value !== null) {
+            return PackageType::tryFrom(strtoupper(trim($value)));
+        }
+
+        // Without @csip:OAISPACKAGETYPE the profile still names the type.
+        return preg_match('#/E-ARK-(SIP|AIP|DIP)(-v[0-9-]+)?\.xml$#', (string) $mets->profile, $match)
+            ? PackageType::from($match[1])
+            : null;
+    }
+
+    /**
+     * The type whose specification the package claims to follow: from
+     * mets/@PROFILE when it names SIP, AIP or DIP, else from
+     *
+     * @csip:OAISPACKAGETYPE. Used to pick the rules, so that a SIP
+     * profile with a wrong package type fails SIP4 instead of being
+     * judged as another type.
+     */
+    public static function claimedType(MetsDocument $mets): ?PackageType
+    {
+        return preg_match('#/E-ARK-(SIP|AIP|DIP)(-v[0-9-]+)?\.xml$#', (string) $mets->profile, $match)
+            ? PackageType::from($match[1])
+            : self::type($mets);
     }
 
     public static function version(MetsDocument $mets): ?SpecificationVersion

@@ -3,14 +3,29 @@
   "description": "Read, validate and write E-ARK information packages (CSIP, SIP, AIP, DIP) in plain PHP.",
   "type": "library",
   "license": "MIT",
-  "keywords": ["e-ark", "csip", "sip", "aip", "dip", "mets", "premis", "oais", "information-package", "archives", "digital-preservation"],
+  "keywords": [
+    "e-ark",
+    "csip",
+    "sip",
+    "aip",
+    "dip",
+    "mets",
+    "premis",
+    "oais",
+    "information-package",
+    "archives",
+    "digital-preservation"
+  ],
   "homepage": "https://github.com/kraenzle-ritter/eark-ip",
   "support": {
     "issues": "https://github.com/kraenzle-ritter/eark-ip/issues",
     "source": "https://github.com/kraenzle-ritter/eark-ip"
   },
   "authors": [
-    { "name": "Kraenzle & Ritter", "email": "info@k-r.ch" }
+    {
+      "name": "Kraenzle & Ritter",
+      "email": "info@k-r.ch"
+    }
   ],
   "require": {
     "php": "^8.2",
@@ -36,7 +51,8 @@
   "scripts": {
     "test": "phpunit",
     "analyse": "phpstan analyse",
-    "format": "pint"
+    "format": "pint",
+    "corpus": "sh tools/fetch-corpus.sh"
   },
   "minimum-stability": "stable",
   "prefer-stable": true

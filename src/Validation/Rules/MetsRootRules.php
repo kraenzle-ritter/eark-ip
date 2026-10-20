@@ -105,6 +105,9 @@ final class MetsRootRules implements RuleSet
             );
         }
 
+        if ($type === 'OTHER') {
+            $context->expect('CSIP4', trim((string) $other) !== '', 'mets/@csip:CONTENTINFORMATIONTYPE is "OTHER" but mets/@csip:OTHERCONTENTINFORMATIONTYPE is missing or empty.', $mets->at($root), Severity::Error);
+        }
         ContentInformationType::checkOther($context, 'CSIP5', $mets, $root, $type, $other, 'mets');
         if ($type === null && $other === null) {
             $context->notApplicable('CSIP5');

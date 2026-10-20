@@ -35,3 +35,9 @@ from the sources below. Retrieved 2026-10-20.
   specification text (section «Folder structure»).
 - `eark-ip-requirements.json`: checks the specifications presuppose but do
   not number (integrity, references).
+
+## IANA
+
+`iana-media-types.txt`: the registered media types, built from the CSV
+files at https://www.iana.org/assignments/media-types/ (retrieved
+2026-10-20). One `type/subtype` per line.

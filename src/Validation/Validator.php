@@ -62,13 +62,15 @@ final class Validator
             foreach ($errors as $error) {
                 $context->fail('EARKIP-XML', $error, new Location('METS.xml'));
             }
+            // The folder structure can be judged without METS.
+            (new StructureRules)->apply($context);
 
             return $this->report($context, null, false);
         }
 
         $detectedVersion = VersionDetector::version($packageMets->model);
         $version ??= $detectedVersion ?? SpecificationVersion::default();
-        $type ??= VersionDetector::type($packageMets->model);
+        $type ??= VersionDetector::claimedType($packageMets->model);
 
         [$representations, $unreadable] = $this->representations($source);
         $context = new ValidationContext($source, $version, $type, RequirementCatalog::for($version), [$packageMets, ...$representations]);
