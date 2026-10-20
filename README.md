@@ -1,6 +1,11 @@
 # kraenzle-ritter/eark-ip
 
 [![CI](https://github.com/kraenzle-ritter/eark-ip/actions/workflows/ci.yml/badge.svg)](https://github.com/kraenzle-ritter/eark-ip/actions/workflows/ci.yml)
+[![Latest Version](https://img.shields.io/packagist/v/kraenzle-ritter/eark-ip)](https://packagist.org/packages/kraenzle-ritter/eark-ip)
+[![Downloads](https://img.shields.io/packagist/dt/kraenzle-ritter/eark-ip)](https://packagist.org/packages/kraenzle-ritter/eark-ip)
+[![GitHub Release](https://img.shields.io/github/v/release/kraenzle-ritter/eark-ip)](https://github.com/kraenzle-ritter/eark-ip/releases)
+[![E-ARK](https://img.shields.io/badge/E--ARK-CSIP%20%7C%20SIP%20%7C%20AIP%20%7C%20DIP%202.2.0%20%2F%202.1.0-0b5394)](https://earkcsip.dilcis.eu/)
+[![DILCIS test corpus](https://img.shields.io/badge/DILCIS%20test%20corpus-336%20cases%20passed-brightgreen)](https://github.com/DILCISBoard/eark-ip-test-corpus)
 [![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
 [![PHPStan Level 8](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
