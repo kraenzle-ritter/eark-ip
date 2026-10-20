@@ -7,36 +7,20 @@
 
 Reads, validates and writes E-ARK information packages: the Common
 Specification for Information Packages (CSIP) and the SIP, AIP and DIP
-specifications built on it, versions 2.2.0 and 2.1.0. Used by agate (SIP
-preparation) and Anton (archival description).
+specifications built on it, versions 2.2.0 and 2.1.0 (there is no AIP
+2.1.0). Used by agate (SIP preparation) and Anton (archival description).
 
-There was no PHP implementation of E-ARK so far; the existing tools are
-Java ([commons-ip](https://github.com/keeps/commons-ip)) or Python
-([eark-validator](https://github.com/E-ARK-Software/eark-validator)).
+The existing E-ARK tools are Java ([commons-ip](https://github.com/keeps/commons-ip))
+or Python ([eark-validator](https://github.com/E-ARK-Software/eark-validator)).
 This package needs nothing beyond PHP 8.2 with ext-dom, ext-libxml and
 ext-zip: no Java, no network access, no Laravel.
 
-> **Status:** in development, nothing usable yet. The plan is below.
-
-## Plan
-
-- **Read** a package from a folder or a ZIP into a model: package,
-  representations, files, metadata references, agents. Reading does not
-  validate, so broken packages from elsewhere can still be inspected.
-- **Validate** folder structure, XSD (offline), the requirements of the
-  METS profiles and integrity (checksums, sizes, references). The report
-  names each requirement by its official ID (`CSIP68`, `SIP4`, `AIPM2` …)
-  with its level (MUST, SHOULD, MAY). A package is valid when no MUST
-  requirement fails.
-- **Write** packages as a folder or a ZIP: package and representation
-  METS, checksums, schemas, PREMIS. Descriptive metadata (EAD, Dublin
-  Core …) is supplied by the caller as files.
-- **Derive** an AIP from a SIP and a DIP from an AIP.
-- **CLI** `vendor/bin/eark-ip validate|info|create`.
-
-Validation is tested against the
-[E-ARK IP test corpus](https://github.com/DILCISBoard/eark-ip-test-corpus)
-of the DILCIS Board and cross-checked with commons-ip.
+- **Validation** is tested against all testable cases of the
+  [E-ARK IP test corpus](https://github.com/DILCISBoard/eark-ip-test-corpus)
+  of the DILCIS Board (336 cases; 3 where the corpus contradicts itself
+  are documented and skipped).
+- **Written packages** pass this validator without warnings and are
+  reported VALID by commons-ip 2.12.1.
 
 ## Installation
 
@@ -44,18 +28,186 @@ of the DILCIS Board and cross-checked with commons-ip.
 composer require kraenzle-ritter/eark-ip
 ```
 
+## Validate
+
+```php
+use KraenzleRitter\EarkIp\Validation\Validator;
+
+$report = (new Validator)->validate('/path/to/package.zip'); // or a folder
+
+$report->isValid();                 // no MUST requirement failed
+foreach ($report->errors() as $finding) {
+    echo $finding->requirement->id, ' ', $finding->requirement->name, "\n";   // CSIP68 File mimetype
+    foreach ($finding->violations as $violation) {
+        echo '  ', $violation->message, ' ', $violation->location, "\n";       // METS.xml:42 <file>
+    }
+}
+file_put_contents('report.json', $report->toJson());
+```
+
+The version comes from `mets/@PROFILE` where the profile names it;
+otherwise 2.2.0 is assumed (`$report->versionDetected` tells which). Pass
+a version or package type to override:
+`$validator->validate($path, SpecificationVersion::V2_1_0, PackageType::SIP)`.
+
+Each requirement of the applicable specifications gets one finding with
+an outcome:
+
+| Outcome | Meaning |
+|---|---|
+| `passed` | checked, nothing wrong |
+| `failed` | at least one violation; its severity is `error` (MUST), `warning` (SHOULD) or `info` (MAY) |
+| `not_applicable` | nothing in the package the requirement applies to, e.g. no rightsMD |
+| `not_testable` | cannot be decided by a program, e.g. CSIP95; the finding says why |
+| `not_checked` | not implemented; currently none |
+
+Besides the numbered requirements of the profiles (CSIP1–119, SIP1–35,
+AIPM1–7, DIP1–4) and the folder structure (CSIPSTR1–16), the validator
+reports checks the specifications presuppose under `EARKIP-…` IDs: METS
+well-formed (`EARKIP-XML`) and schema-valid (`EARKIP-XSD`, offline),
+representation METS readable, checksum algorithm computable, every file
+referenced. Sizes, checksums and file references are reported under the
+requirement of the attribute (CSIP69, CSIP71, CSIP79 …), as the corpus
+does.
+
+### Report format
+
+`toJson()` (and `eark-ip validate --format=json`) writes:
+
+```json
+{
+  "report_version": "1.0",
+  "validator": "kraenzle-ritter/eark-ip",
+  "date": "2026-10-20T10:00:00+00:00",
+  "package": { "location": "…", "objid": "…", "type": "SIP" },
+  "specification": { "names": ["CSIP", "SIP"], "version": "2.2.0", "version_detected": true },
+  "valid": true,
+  "summary": { "passed": 134, "failed": 0, "not_applicable": 34, "not_testable": 5, "not_checked": 0, "errors": 0, "warnings": 0 },
+  "findings": [
+    {
+      "id": "CSIP68", "specification": "CSIP", "level": "MUST", "name": "File mimetype",
+      "outcome": "failed", "severity": "error",
+      "violations": [ { "message": "…", "severity": "error", "location": { "file": "METS.xml", "line": 42, "element": "file" } } ],
+      "notes": []
+    }
+  ]
+}
+```
+
+## Read
+
+```php
+use KraenzleRitter\EarkIp\Reader\PackageReader;
+
+$package = (new PackageReader)->read('/path/to/package.zip');
+
+$package->objId();                        // mets/@OBJID
+$package->type;                           // PackageType::SIP
+$package->version;                        // SpecificationVersion::V2_2_0
+$package->header()->agentsWithRole('ARCHIVIST');
+$package->mets->metadata(MetadataSection::Descriptive);   // dmdSec/mdRef, with MDTYPE, checksum …
+foreach ($package->representations as $representation) {
+    $representation->dataFiles();         // package paths below data/
+    $representation->mets?->files();      // what its METS lists
+}
+$package->parentAips;                     // AIP: structMap «parent AIP»
+$package->submission;                     // AIP: the SIP under submission/
+```
+
+Reading does not validate: a package with errors can still be read, as
+long as its `METS.xml` is well-formed. ZIPs are read in place, not
+unpacked.
+
+## Write
+
+```php
+use KraenzleRitter\EarkIp\Writer\{MetadataFile, PackageBuilder, PackageWriter, PremisBuilder, RepresentationBuilder, StringContent};
+
+$sip = PackageBuilder::sip('urn:uuid:5b2e7c1a-…')
+    ->label('Annual report 2025')
+    ->contentCategory('Textual works – Digital')
+    ->contentInformationType('OTHER', 'Folder of files')
+    ->software('agate', '1.4.0')
+    ->archivalCreator('Example Office', identificationCode: 'EX-1')
+    ->submitter('Example Office')
+    ->submissionAgreement('SA-2025-01')
+    ->descriptiveMetadata(MetadataFile::of('/path/ead.xml', 'EAD', '3'))
+    ->descriptiveMetadata(MetadataFile::of(new StringContent($json, 'metadata.json'), 'anton-import-format', '0.5'))
+    ->premis((new PremisBuilder)->fileFromPath('representations/rep1/data/a.pdf', '/path/files/a.pdf', 'fmt/276'))
+    ->documentation('/path/readme.txt');
+$sip->representation('rep1', fn (RepresentationBuilder $rep) => $rep->directory('/path/files'));
+
+(new PackageWriter)->write($sip, '/out/package.zip');   // or a folder path
+```
+
+The writer computes sizes, SHA-256 checksums, MIME types and IDs, writes
+the package and representation METS, the structural maps and the
+schemas, and lays the package out as CSIP prescribes
+([docs/structure.md](docs/structure.md)). IDs are derived from the
+package identifier and paths, so writing the same package again gives
+the same METS. A ZIP has a single root folder named after `OBJID`.
+
+Metadata types METS knows (`EAD`, `DC`, `PREMIS` …) go into `@MDTYPE`;
+any other name becomes `MDTYPE="OTHER"` with `@OTHERMDTYPE`.
+
+### AIP and DIP
+
+```php
+use KraenzleRitter\EarkIp\Writer\{AipBuilder, DipBuilder};
+
+$aip = AipBuilder::fromSip('/in/sip.zip', 'urn:uuid:…', parentAip: 'urn:uuid:…');
+(new PackageWriter)->write($aip, '/archive/aip.zip');
+
+$dip = DipBuilder::fromAip('/archive/aip.zip', 'urn:uuid:…', representations: ['access']);
+(new PackageWriter)->write($dip, '/out/dip.zip');
+```
+
+The AIP takes over the SIP's metadata and representations, adds PREMIS 3
+with the ingest event and keeps the SIP unchanged under `submission/`
+(switch off with `keepSubmission: false`). The DIP takes the current
+descriptive metadata and the chosen representations.
+
+## Command line
+
+```bash
+vendor/bin/eark-ip validate package.zip [--format=json] [--version=2.1.0] [--type=SIP] [--verbose]
+vendor/bin/eark-ip info package.zip
+vendor/bin/eark-ip create /path/to/files out.zip --id=urn:uuid:… --submitter="Example Office" --metadata=ead.xml:EAD:3
+```
+
+`validate` exits with 0 for a valid package, 1 for an invalid one, 2 for
+wrong usage or a package that cannot be opened.
+
+## Safety
+
+Packages from elsewhere are refused before anything is read when a ZIP
+entry or folder leaves the package (`..`, absolute paths, symlinks) or
+exceeds the limits (`new Validator(new Limits(maxEntries: …, maxUncompressedBytes: …))`).
+XML is parsed without network access and without entity substitution;
+documents with a DOCTYPE are refused. Schemas inside a package are never
+used for validation.
+
+## Where the specifications disagree
+
+Some requirements contradict each other, the corpus or commons-ip. The
+validator takes a documented position for each; see
+[docs/spec-issues.md](docs/spec-issues.md).
+
 ## Sources
 
 The specifications, METS profiles, schemas and vocabularies are published
-by the [DILCIS Board](https://github.com/DILCISBoard) under CC-BY-4.0. The
-Schematron rules for 2.1.0 are taken from eark-validator (Apache-2.0).
-Both will be shipped under `resources/` with their sources noted.
+by the [DILCIS Board](https://github.com/DILCISBoard) under CC-BY-4.0
+and shipped under `resources/`, with the exact commits in
+[resources/SOURCES.md](resources/SOURCES.md). The IANA media type list is
+shipped for checking `@MIMETYPE`.
 
 ## Testing
 
 ```bash
 composer test
+composer corpus      # fetch the DILCIS test corpus; the corpus tests are skipped without it
 composer analyse
+tools/commons-ip-compare.sh package.zip   # cross-check with commons-ip (Java 17+)
 ```
 
 ## License
