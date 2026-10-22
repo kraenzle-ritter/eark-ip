@@ -71,24 +71,33 @@ final class RepresentationRoles
 
         [$events, $relationships, $derived] = $this->edges($premis);
 
-        /** @var array<string, array{RepresentationFunction, string, string}> $roles */
+        /** @var array<string, array{RepresentationFunction, string, string, array<string, mixed>}> $roles */
         $roles = [];
         foreach ($events as [$from, $to]) {
-            $roles[$from] ??= [RepresentationFunction::Original, RepresentationRole::BASIS_EVENT, "source of a migration or normalization whose outcome is in {$to}"];
-            $roles[$to] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_EVENT, "outcome of a migration or normalization of files in {$from}"];
+            $roles[$from] ??= [RepresentationFunction::Original, RepresentationRole::BASIS_EVENT, RepresentationRole::REASON_MIGRATION_SOURCE, ['outcome' => $to]];
+            $roles[$to] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_EVENT, RepresentationRole::REASON_MIGRATION_OUTCOME, ['source' => $from]];
         }
         $this->relationships($relationships, $roles);
         foreach ($this->names as $name) {
             if (! isset($roles[$name]) && ($function = $this->byName($name)) !== null) {
-                $roles[$name] = [$function, RepresentationRole::BASIS_NAME, "named {$name}"];
+                $roles[$name] = [$function, RepresentationRole::BASIS_NAME, RepresentationRole::REASON_NAMED, ['name' => $name]];
             }
         }
         $this->limit($roles);
 
         $proposal = [];
         foreach ($this->names as $name) {
-            [$function, $basis, $reason] = $roles[$name] ?? [RepresentationFunction::Unknown, RepresentationRole::BASIS_DEFAULT, 'nothing says what it is for'];
-            $proposal[] = new RepresentationRole($name, $function, $basis, $reason, array_key_exists($name, $derived), $derived[$name] ?? null);
+            [$function, $basis, $code, $params] = $roles[$name] ?? [RepresentationFunction::Unknown, RepresentationRole::BASIS_DEFAULT, RepresentationRole::REASON_UNSPECIFIED, []];
+            $proposal[] = new RepresentationRole(
+                $name,
+                $function,
+                $basis,
+                RepresentationRole::reasonText($code, $params),
+                array_key_exists($name, $derived),
+                $derived[$name] ?? null,
+                $code,
+                $params,
+            );
         }
 
         return $proposal;
@@ -163,7 +172,7 @@ final class RepresentationRoles
      * Rule 2.
      *
      * @param  list<array{string, string}>  $edges
-     * @param  array<string, array{RepresentationFunction, string, string}>  $roles
+     * @param  array<string, array{RepresentationFunction, string, string, array<string, mixed>}>  $roles
      */
     private function relationships(array $edges, array &$roles): void
     {
@@ -178,7 +187,7 @@ final class RepresentationRoles
                     $level === 1 => RepresentationFunction::Master,
                     default => RepresentationFunction::Access,
                 };
-                $roles[$name] ??= [$function, RepresentationRole::BASIS_RELATIONSHIP, "step {$level} of a chain of derivations"];
+                $roles[$name] ??= [$function, RepresentationRole::BASIS_RELATIONSHIP, RepresentationRole::REASON_CHAIN_STEP, ['step' => $level]];
             }
 
             return;
@@ -188,12 +197,12 @@ final class RepresentationRoles
             $fromFunction = $roles[$from][0] ?? null;
             $toFunction = $roles[$to][0] ?? null;
             if ($fromFunction === RepresentationFunction::Original) {
-                $roles[$to] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_RELATIONSHIP, "derived from the original in {$from}"];
+                $roles[$to] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_RELATIONSHIP, RepresentationRole::REASON_DERIVED_FROM_ORIGINAL, ['original' => $from]];
             } elseif ($toFunction === RepresentationFunction::Master) {
-                $roles[$from] ??= [RepresentationFunction::Original, RepresentationRole::BASIS_RELATIONSHIP, "source of the master in {$to}"];
+                $roles[$from] ??= [RepresentationFunction::Original, RepresentationRole::BASIS_RELATIONSHIP, RepresentationRole::REASON_SOURCE_OF_MASTER, ['master' => $to]];
             } else {
-                $roles[$from] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_RELATIONSHIP, "source of files derived in {$to}"];
-                $roles[$to] ??= [RepresentationFunction::Access, RepresentationRole::BASIS_RELATIONSHIP, "derived from files in {$from}"];
+                $roles[$from] ??= [RepresentationFunction::Master, RepresentationRole::BASIS_RELATIONSHIP, RepresentationRole::REASON_SOURCE_OF_DERIVED, ['derived' => $to]];
+                $roles[$to] ??= [RepresentationFunction::Access, RepresentationRole::BASIS_RELATIONSHIP, RepresentationRole::REASON_DERIVED_FROM, ['source' => $from]];
             }
         }
     }
@@ -231,7 +240,7 @@ final class RepresentationRoles
     /**
      * Exactly one master, at most one access copy.
      *
-     * @param  array<string, array{RepresentationFunction, string, string}>  $roles
+     * @param  array<string, array{RepresentationFunction, string, string, array<string, mixed>}>  $roles
      */
     private function limit(array &$roles): void
     {
@@ -243,14 +252,14 @@ final class RepresentationRoles
                 if ($master === null) {
                     $master = $name;
                 } else {
-                    $roles[$name] = [RepresentationFunction::Unknown, $roles[$name][1], "a further master after {$master}; only one is allowed ({$roles[$name][2]})"];
+                    $roles[$name] = [RepresentationFunction::Unknown, $roles[$name][1], RepresentationRole::REASON_FURTHER_MASTER, ['first' => $master, 'previous' => ['code' => $roles[$name][2], 'params' => $roles[$name][3]]]];
                 }
             }
             if ($function === RepresentationFunction::Access) {
                 if ($access === null) {
                     $access = $name;
                 } else {
-                    $roles[$name] = [RepresentationFunction::Unknown, $roles[$name][1], "a further access copy after {$access}; only one is allowed ({$roles[$name][2]})"];
+                    $roles[$name] = [RepresentationFunction::Unknown, $roles[$name][1], RepresentationRole::REASON_FURTHER_ACCESS, ['first' => $access, 'previous' => ['code' => $roles[$name][2], 'params' => $roles[$name][3]]]];
                 }
             }
         }
@@ -263,11 +272,11 @@ final class RepresentationRoles
         $first = $this->first($roles, fn (?RepresentationFunction $function) => $function === null || $function === RepresentationFunction::Unknown)
             ?? $this->first($roles, fn (?RepresentationFunction $function) => $function !== RepresentationFunction::Original)
             ?? $this->names[0];
-        $roles[$first] = [RepresentationFunction::Master, RepresentationRole::BASIS_DEFAULT, 'first representation; nothing names a master'];
+        $roles[$first] = [RepresentationFunction::Master, RepresentationRole::BASIS_DEFAULT, RepresentationRole::REASON_FIRST_REPRESENTATION, []];
     }
 
     /**
-     * @param  array<string, array{RepresentationFunction, string, string}>  $roles
+     * @param  array<string, array{RepresentationFunction, string, string, array<string, mixed>}>  $roles
      * @param  callable(?RepresentationFunction): bool  $matches
      */
     private function first(array $roles, callable $matches): ?string

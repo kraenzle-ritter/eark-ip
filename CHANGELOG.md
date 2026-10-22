@@ -4,6 +4,11 @@ All notable changes to kraenzle-ritter/eark-ip. Format follows [Keep a Changelog
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-22
+
+### Added
+- `RepresentationRole` carries its reason as a code with values, `reasonCode` (`REASON_*`, e.g. `migration-outcome`) and `reasonParams` (e.g. `['source' => 'rep2']`), also in `toArray()` as `reason_code` and `reason_params`, so an application can show the reason in its own language. `RepresentationRole::reasonText()` makes the English text; `reason` is unchanged. A further master or access copy keeps the reason it would have had in `previous`.
+
 ## [0.2.0] - 2026-10-22
 
 ### Added

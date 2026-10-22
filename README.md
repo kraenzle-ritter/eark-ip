@@ -140,11 +140,15 @@ foreach (RepresentationRoles::propose($package, $premis) as $role) {
     $role->function;     // RepresentationFunction::Master, Original, Access or Unknown
     $role->basis;        // premis-event, premis-relationship, name or default
     $role->reason;       // e.g. "outcome of a migration or normalization of files in rep2"
+    $role->reasonCode;   // the same as a code: RepresentationRole::REASON_MIGRATION_OUTCOME ('migration-outcome')
+    $role->reasonParams; // its values: ['source' => 'rep2']
     $role->derived;      // PREMIS says its files come from elsewhere
 }
 ```
 
 The reader takes every PREMIS file (PREMIS 2 or 3) that the package METS or a representation METS points to from `digiprovMD` or `techMD`. CSIP does not say what a representation is for; `RepresentationRoles` proposes it, first rule that applies: a `migration` or `normalization` event makes its source the original and its outcome the master; a `derivation` relationship (`has source`, `is source of`) makes the source the master and the derived representation the access copy, or the master when the source is the original (a chain of three: original, master, access); then the name (`access`, `web`, `display` … → access; `original`, `submission`, `delivered` … → original; `master`, `preservation` → master); otherwise the first representation is the master and the others are unknown. There is always exactly one master and at most one access copy. Objects are placed in a representation by a path `representations/<name>/…` in their identifier, content location or original name, by the representation object's name, or by the folder of the PREMIS file. It is a proposal: let a person confirm it.
+
+The reason is English. An application that shows it in another language translates `reasonCode` with `reasonParams` instead; the codes and their values are listed on `RepresentationRole` (`REASON_*`), and `RepresentationRole::reasonText()` gives the English text. For a further master or access copy, `previous` holds the code and values of the reason it would have had.
 
 ## Write
 

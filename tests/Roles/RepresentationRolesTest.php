@@ -17,6 +17,7 @@ use KraenzleRitter\EarkIp\Writer\PackageWriter;
 use KraenzleRitter\EarkIp\Writer\PremisBuilder;
 use KraenzleRitter\EarkIp\Writer\RepresentationBuilder;
 use KraenzleRitter\EarkIp\Writer\StringContent;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class RepresentationRolesTest extends TestCase
 {
@@ -138,6 +139,67 @@ final class RepresentationRolesTest extends TestCase
         $this->assertStringContainsString('only one is allowed', $roles['master-b']->reason);
         $this->assertSame(RepresentationFunction::Access, $roles['web']->function);
         $this->assertSame(RepresentationFunction::Unknown, $roles['web-small']->function);
+    }
+
+    public function test_each_reason_comes_as_a_code_with_its_values(): void
+    {
+        $premis = $this->files(['rep1' => 'a.tif', 'rep2' => 'a.tif'])
+            ->event('ev-1', 'normalization', new \DateTimeImmutable('2026-10-01T10:00:00Z'), objects: [
+                'representations/rep2/data/a.tif' => 'source',
+                'representations/rep1/data/a.tif' => 'outcome',
+            ]);
+
+        $roles = $this->propose(['rep1' => ['a.tif'], 'rep2' => ['a.tif'], 'rep3' => ['a.txt']], $premis);
+
+        $this->assertSame([RepresentationRole::REASON_MIGRATION_OUTCOME, ['source' => 'rep2']], [$roles['rep1']->reasonCode, $roles['rep1']->reasonParams]);
+        $this->assertSame([RepresentationRole::REASON_MIGRATION_SOURCE, ['outcome' => 'rep1']], [$roles['rep2']->reasonCode, $roles['rep2']->reasonParams]);
+        $this->assertSame([RepresentationRole::REASON_UNSPECIFIED, []], [$roles['rep3']->reasonCode, $roles['rep3']->reasonParams]);
+        $this->assertSame('outcome of a migration or normalization of files in rep2', $roles['rep1']->reason);
+        $this->assertSame(
+            ['reason_code' => RepresentationRole::REASON_MIGRATION_OUTCOME, 'reason_params' => ['source' => 'rep2']],
+            array_intersect_key($roles['rep1']->toArray(), ['reason_code' => true, 'reason_params' => true])
+        );
+    }
+
+    public function test_a_further_master_carries_the_reason_it_would_have_had(): void
+    {
+        $roles = $this->propose(['master-a' => ['a.tif'], 'master-b' => ['a.tif']]);
+
+        $this->assertSame(RepresentationRole::REASON_FURTHER_MASTER, $roles['master-b']->reasonCode);
+        $this->assertSame(
+            ['first' => 'master-a', 'previous' => ['code' => RepresentationRole::REASON_NAMED, 'params' => ['name' => 'master-b']]],
+            $roles['master-b']->reasonParams
+        );
+        $this->assertSame('a further master after master-a; only one is allowed (named master-b)', $roles['master-b']->reason);
+    }
+
+    /**
+     * The English texts are those of 0.2.0, so a reader of `reason` sees no change.
+     *
+     * @return array<string, array{string, array<string, mixed>, string}>
+     */
+    public static function reasonTexts(): array
+    {
+        return [
+            'migration source' => [RepresentationRole::REASON_MIGRATION_SOURCE, ['outcome' => 'rep2'], 'source of a migration or normalization whose outcome is in rep2'],
+            'migration outcome' => [RepresentationRole::REASON_MIGRATION_OUTCOME, ['source' => 'rep1'], 'outcome of a migration or normalization of files in rep1'],
+            'chain step' => [RepresentationRole::REASON_CHAIN_STEP, ['step' => 2], 'step 2 of a chain of derivations'],
+            'derived from original' => [RepresentationRole::REASON_DERIVED_FROM_ORIGINAL, ['original' => 'rep1'], 'derived from the original in rep1'],
+            'source of master' => [RepresentationRole::REASON_SOURCE_OF_MASTER, ['master' => 'rep2'], 'source of the master in rep2'],
+            'source of derived' => [RepresentationRole::REASON_SOURCE_OF_DERIVED, ['derived' => 'rep2'], 'source of files derived in rep2'],
+            'derived from' => [RepresentationRole::REASON_DERIVED_FROM, ['source' => 'rep1'], 'derived from files in rep1'],
+            'named' => [RepresentationRole::REASON_NAMED, ['name' => 'web'], 'named web'],
+            'further access' => [RepresentationRole::REASON_FURTHER_ACCESS, ['first' => 'web', 'previous' => ['code' => 'named', 'params' => ['name' => 'web-small']]], 'a further access copy after web; only one is allowed (named web-small)'],
+            'first representation' => [RepresentationRole::REASON_FIRST_REPRESENTATION, [], 'first representation; nothing names a master'],
+            'unspecified' => [RepresentationRole::REASON_UNSPECIFIED, [], 'nothing says what it is for'],
+        ];
+    }
+
+    /** @param  array<string, mixed>  $params */
+    #[DataProvider('reasonTexts')]
+    public function test_the_english_text_of_a_reason(string $code, array $params, string $text): void
+    {
+        $this->assertSame($text, RepresentationRole::reasonText($code, $params));
     }
 
     public function test_a_master_is_found_when_only_original_and_access_are_named(): void
