@@ -64,13 +64,7 @@ since they break on case-sensitive file systems.
   (CSIPSTR2) and allows a mapping for characters file systems refuse. The
   writer keeps `OBJID` as it is, apart from slashes; the validator compares
   leniently and warns.
-- **CSIP101.** commons-ip warns when there is a division "Representations"
-  but no file group with `@USE` exactly "Representations". CSIP114 asks for
-  groups named "Representations" followed by the path, which the writer
-  produces; commons-ip's own packages avoid the warning by writing no
-  "Representations" division at all (missing CSIP101/104, both SHOULD).
-  Packages from this writer therefore get this one warning from
-  commons-ip.
+- **CSIP101.** commons-ip warns when there is a division "Representations" but no file group with `@USE` exactly "Representations". CSIP114 asks for groups named "Representations" followed by the path, which the writer produces, and both the specification and the corpus put those groups into a division "Representations": the structMap example of CSIP 2.2.0 (`structMapExample1`) points from it to the group `Representations/submission/data`, and the corpus case `CSIP104/invalid/fileGrp_Representations_but_missing_structMap` is a package whose group `Representations/rep1` is missing from that division, rule level ERROR. commons-ip's own packages avoid the warning by writing no "Representations" division at all, and it reports CSIP101 for the corpus package `CSIP104/valid/minimal_IP_with_1_representation` too (checked 2026-10-22). Position: the writer follows the specification and the corpus and keeps the division; dropping it would make this validator report CSIP104 instead. Reported as keeps/commons-ip#390. Packages from this writer therefore get this one warning from commons-ip.
 - **Empty documentation.** commons-ip requires the label of every division
   to lead to a folder (its CSIP107). The writer always writes a
   Documentation division (CSIP93 SHOULD) and therefore always creates
