@@ -124,6 +124,28 @@ long as its `METS.xml` is well-formed. ZIPs are read in place, not
 unpacked. Packages in TAR archives (CSIPSTR3, AIP28) are not supported
 yet; unpack them first.
 
+### PREMIS and what the representations are for
+
+```php
+use KraenzleRitter\EarkIp\Reader\PremisReader;
+use KraenzleRitter\EarkIp\RepresentationRoles;
+
+$premis = (new PremisReader)->read($package, '/path/to/package.zip');
+$premis->objects;        // files and representations, with identifiers, originalName, relationships
+$premis->events;         // with the objects they link: $event->linked('source'), $event->linked('outcome')
+$premis->notes;          // PREMIS files that are referenced but missing or not readable
+
+foreach (RepresentationRoles::propose($package, $premis) as $role) {
+    $role->name;         // rep1
+    $role->function;     // RepresentationFunction::Master, Original, Access or Unknown
+    $role->basis;        // premis-event, premis-relationship, name or default
+    $role->reason;       // e.g. "outcome of a migration or normalization of files in rep2"
+    $role->derived;      // PREMIS says its files come from elsewhere
+}
+```
+
+The reader takes every PREMIS file (PREMIS 2 or 3) that the package METS or a representation METS points to from `digiprovMD` or `techMD`. CSIP does not say what a representation is for; `RepresentationRoles` proposes it, first rule that applies: a `migration` or `normalization` event makes its source the original and its outcome the master; a `derivation` relationship (`has source`, `is source of`) makes the source the master and the derived representation the access copy, or the master when the source is the original (a chain of three: original, master, access); then the name (`access`, `web`, `display` … → access; `original`, `submission`, `delivered` … → original; `master`, `preservation` → master); otherwise the first representation is the master and the others are unknown. There is always exactly one master and at most one access copy. Objects are placed in a representation by a path `representations/<name>/…` in their identifier, content location or original name, by the representation object's name, or by the folder of the PREMIS file. It is a proposal: let a person confirm it.
+
 ## Write
 
 ```php

@@ -11,7 +11,8 @@ use KraenzleRitter\EarkIp\Xml\Ns;
 
 /**
  * Builds PREMIS 3 preservation metadata: objects (files and
- * representations), events and agents, linked by local identifiers.
+ * representations) with their relationships, events and agents, linked
+ * by local identifiers.
  * What goes in is the caller's business; this class keeps the element
  * order of the PREMIS schema.
  *
@@ -101,6 +102,21 @@ final class PremisBuilder
         return $this;
     }
 
+    /**
+     * A relationship of a described object to another, e.g. derivation /
+     * "has source" from an access copy to its master (Library of
+     * Congress vocabularies relationshipType and relationshipSubType).
+     */
+    public function relationship(string $from, string $type, string $subType, string $to): self
+    {
+        if (! isset($this->objects[$from])) {
+            throw new EarkIpException("Relationship from {$from}, which is not described.");
+        }
+        $this->objects[$from]['relationships'][] = ['type' => $type, 'subType' => $subType, 'to' => $to];
+
+        return $this;
+    }
+
     /** An agent: "software", "organization" or "person". */
     public function agent(string $id, string $name, string $type = 'software', ?string $version = null, ?string $note = null): self
     {
@@ -183,6 +199,14 @@ final class PremisBuilder
         }
         if ($object['originalName'] !== null) {
             $this->add($document, $element, 'originalName', $object['originalName']);
+        }
+        foreach ($object['relationships'] ?? [] as $relationship) {
+            $related = $this->add($document, $element, 'relationship');
+            $this->add($document, $related, 'relationshipType', $relationship['type']);
+            $this->add($document, $related, 'relationshipSubType', $relationship['subType']);
+            $identifier = $this->add($document, $related, 'relatedObjectIdentifier');
+            $this->add($document, $identifier, 'relatedObjectIdentifierType', 'local');
+            $this->add($document, $identifier, 'relatedObjectIdentifierValue', $relationship['to']);
         }
     }
 

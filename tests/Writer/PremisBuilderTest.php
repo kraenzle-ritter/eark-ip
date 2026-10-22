@@ -52,6 +52,29 @@ final class PremisBuilderTest extends TestCase
         $this->assertSame([], Xml::schemaErrors($document, Resources::premisSchema()));
     }
 
+    public function test_relationships_between_objects_are_schema_valid(): void
+    {
+        $document = Xml::load((new PremisBuilder)
+            ->representation('rep1')
+            ->representation('rep2')
+            ->file('representations/rep3/data/a.jpg', 10, originalName: 'a.jpg')
+            ->relationship('rep1', 'derivation', 'has source', 'rep2')
+            ->relationship('representations/rep3/data/a.jpg', 'derivation', 'has source', 'rep1')
+            ->toXml());
+
+        $this->assertSame([], Xml::schemaErrors($document, Resources::premisSchema()));
+        $xpath = Xml::xpath($document);
+        $this->assertSame('rep2', $xpath->evaluate("string(//premis:object[premis:objectIdentifier/premis:objectIdentifierValue='rep1']/premis:relationship/premis:relatedObjectIdentifier/premis:relatedObjectIdentifierValue)"));
+        $this->assertSame('has source', $xpath->evaluate("string(//premis:object[premis:objectIdentifier/premis:objectIdentifierValue='representations/rep3/data/a.jpg']/premis:relationship/premis:relationshipSubType)"));
+    }
+
+    public function test_a_relationship_needs_a_described_object(): void
+    {
+        $this->expectException(EarkIpException::class);
+
+        (new PremisBuilder)->relationship('rep1', 'derivation', 'has source', 'rep2');
+    }
+
     public function test_representation_and_entity_objects(): void
     {
         $document = Xml::load((new PremisBuilder)->representation('rep1')->intellectualEntity('sip-1', 'SIP')->toXml());

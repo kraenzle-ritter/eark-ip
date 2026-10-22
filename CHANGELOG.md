@@ -4,6 +4,13 @@ All notable changes to kraenzle-ritter/eark-ip. Format follows [Keep a Changelog
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-22
+
+### Added
+- `Reader\PremisReader` reads the PREMIS files (PREMIS 2 and 3) that the package METS and the representation METS documents point to: objects with identifiers, original name, content location and relationships, events with the objects they link and their roles, agents. Missing or unreadable files become notes; reading goes on (agate#14).
+- `RepresentationRoles::propose()` proposes what each representation is for (`RepresentationFunction`: master, original, access, unknown) from migration and normalization events, derivation relationships, the names, else the order; exactly one master, at most one access copy. With the basis and a reason for showing to a person.
+- `PremisBuilder::relationship()` writes relationships between objects, e.g. derivation / `has source` from an access copy to its master.
+
 ## [0.1.3] - 2026-10-20
 
 ### Fixed
