@@ -1,5 +1,12 @@
 # kraenzle-ritter/eark-ip
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="art/schildkroete-dark.png">
+    <img src="art/schildkroete.png" alt="A tortoise, drawn in the style of a wood engraving" width="360">
+  </picture>
+</p>
+
 [![CI](https://github.com/kraenzle-ritter/eark-ip/actions/workflows/ci.yml/badge.svg)](https://github.com/kraenzle-ritter/eark-ip/actions/workflows/ci.yml)
 [![Latest Version](https://img.shields.io/packagist/v/kraenzle-ritter/eark-ip)](https://packagist.org/packages/kraenzle-ritter/eark-ip)
 [![Downloads](https://img.shields.io/packagist/dt/kraenzle-ritter/eark-ip)](https://packagist.org/packages/kraenzle-ritter/eark-ip)
